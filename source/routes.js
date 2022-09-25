@@ -9,6 +9,7 @@ import Colors from './global/colorScheme';
 import Intro from './screens/Intro';
 import Login from './screens/Login';
 import CompanyLink from './screens/CompanyLink';
+import Main from './screens/Main';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +33,7 @@ const Routes = () => {
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('https://geeknote.devluar.com/ajuda');
+                  Linking.openURL('');
                 }}>
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
@@ -51,7 +52,7 @@ const Routes = () => {
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('https://geeknote.devluar.com/ajuda');
+                  Linking.openURL('');
                 }}>
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
@@ -70,7 +71,26 @@ const Routes = () => {
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('https://geeknote.devluar.com/ajuda');
+                  Linking.openURL('');
+                }}>
+                <Icon name="help" size={30} color="#fff" />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="Main"
+          component={Main}
+          options={({navigation}) => ({
+            headerStyle: {backgroundColor: Colors.whitetheme.primary},
+            headerTransparent: false,
+            headerTitle: 'D | Walt Gestão',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {color: 'white'},
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('');
                 }}>
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
