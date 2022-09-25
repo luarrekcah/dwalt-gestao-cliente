@@ -8,6 +8,7 @@ import Colors from './global/colorScheme';
 
 import Intro from './screens/Intro';
 import Login from './screens/Login';
+import CompanyLink from './screens/CompanyLink';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,25 @@ const Routes = () => {
             headerStyle: {backgroundColor: Colors.whitetheme.primary},
             headerTransparent: false,
             headerTitle: 'Realize o login',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {color: 'white'},
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://geeknote.devluar.com/ajuda');
+                }}>
+                <Icon name="help" size={30} color="#fff" />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="CompanyLink"
+          component={CompanyLink}
+          options={({navigation}) => ({
+            headerStyle: {backgroundColor: Colors.whitetheme.primary},
+            headerTransparent: false,
+            headerTitle: 'Última etapa',
             headerTitleAlign: 'center',
             headerTitleStyle: {color: 'white'},
             headerLeft: () => (
