@@ -100,7 +100,7 @@ const Routes = () => {
                 onPress={() => {
                   Linking.openURL('');
                 }}>
-                <Icon name="people" size={30} color="#fff" />
+                <Icon name="settings" size={30} color="#fff" />
               </TouchableOpacity>
             ),
           })}

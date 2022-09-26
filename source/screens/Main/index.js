@@ -1,11 +1,40 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import Colors from '../../global/colorScheme';
+import Home from './components/Home';
+
+import Business from '../Business';
+import User from '../User';
+
+const Tab = createBottomTabNavigator();
 
 const Main = ({navigation}) => {
   return (
-    <View>
-      <Text>Página principall</Text>
-    </View>
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        headerShown: false,
+        tabBarStyle: {backgroundColor: Colors.whitetheme.primary},
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          if (route.name === 'Main') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Empresa') {
+            iconName = focused ? 'business' : 'business-outline';
+          } else if (route.name === 'Usuário') {
+            iconName = focused ? 'account-circle' : 'account-circle-outline';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#fff',
+        tabBarInactiveTintColor: 'gray',
+      })}
+      initialRouteName="Main">
+      <Tab.Screen name="Empresa" component={Business} />
+      <Tab.Screen name="Main" component={Home} />
+      <Tab.Screen name="Usuário" component={User} />
+    </Tab.Navigator>
   );
 };
 
