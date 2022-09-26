@@ -63,26 +63,34 @@ const CompanyLink = ({navigation}) => {
     database()
       .ref('/gestaoempresa/usuarios')
       .once('value')
-      .then(snapshot => {
+      .then(async snapshot => {
         let users = [];
         if (snapshot.val() !== null) {
           users = snapshot.val();
         }
-        users.push(updatedUser);
-        database()
-          .ref('/gestaoempresa/usuarios')
-          .set(users)
-          .then(async () => {
-            setLink({success: 'user registered'});
-            await AsyncStorage.setItem(
-              'logged',
-              JSON.stringify({logged: true}),
-            );
-            setTimeout(() => {
-              navigation.navigate('Main');
-            }, 1000 * 5);
-            return;
-          });
+        const checkUser = users.find(item => item._id === user._id);
+        if (checkUser) {
+          await AsyncStorage.setItem('logged', JSON.stringify({logged: true}));
+          setTimeout(() => {
+            navigation.navigate('Main');
+          }, 1000 * 5);
+        } else {
+          users.push(updatedUser);
+          database()
+            .ref('/gestaoempresa/usuarios')
+            .set(users)
+            .then(async () => {
+              setLink({success: 'user registered'});
+              await AsyncStorage.setItem(
+                'logged',
+                JSON.stringify({logged: true}),
+              );
+              setTimeout(() => {
+                navigation.navigate('Main');
+              }, 1000 * 5);
+              return;
+            });
+        }
       });
   };
 
