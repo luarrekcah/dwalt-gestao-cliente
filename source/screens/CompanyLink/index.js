@@ -71,9 +71,7 @@ const CompanyLink = ({navigation}) => {
         const checkUser = users.find(item => item._id === user._id);
         if (checkUser) {
           await AsyncStorage.setItem('logged', JSON.stringify({logged: true}));
-          setTimeout(() => {
-            navigation.navigate('Main');
-          }, 1000 * 5);
+          navigation.navigate('Main');
         } else {
           users.push(updatedUser);
           database()

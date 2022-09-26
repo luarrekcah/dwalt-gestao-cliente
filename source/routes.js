@@ -95,6 +95,14 @@ const Routes = () => {
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
             ),
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('');
+                }}>
+                <Icon name="people" size={30} color="#fff" />
+              </TouchableOpacity>
+            ),
           })}
         />
       </Stack.Navigator>
