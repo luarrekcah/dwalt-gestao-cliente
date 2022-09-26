@@ -6,6 +6,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Intro = ({navigation}) => {
+  const [logged, setLogged] = React.useState(false);
+
+  React.useEffect(() => {
+    AsyncStorage.getItem('logged').then(data => {
+      if (data === null) {
+        setLogged(false);
+      } else {
+        setLogged(JSON.parse(data).logged);
+      }
+    });
+  }, []);
+
   const slides = [
     {
       key: 1,
@@ -73,29 +85,27 @@ const Intro = ({navigation}) => {
     navigation.navigate('Login');
   };
 
-  const CheckLogged = () => {
-    AsyncStorage.getItem('logged').then(data => {
-      if (JSON.parse(data).logged) {
-        return navigation.navigate('Main');
-      } else {
-        return (
-          <View style={styles.container}>
-            <StatusBar translucent backgroundColor="transparent" />
-            <AppIntroSlider
-              keyExtractor={item => item.title}
-              renderItem={renderItem}
-              data={slides}
-              onDone={onDone}
-              renderDoneButton={renderDoneButton}
-              renderNextButton={renderNextButton}
-            />
-          </View>
-        );
-      }
-    });
+  const RenderSlides = () => {
+    return (
+      <View style={styles.container}>
+        <StatusBar translucent backgroundColor="transparent" />
+        <AppIntroSlider
+          keyExtractor={item => item.title}
+          renderItem={renderItem}
+          data={slides}
+          onDone={onDone}
+          renderDoneButton={renderDoneButton}
+          renderNextButton={renderNextButton}
+        />
+      </View>
+    );
   };
 
-  return <CheckLogged />;
+  if (!logged) {
+    return <RenderSlides />;
+  } else {
+    navigation.navigate('Main');
+  }
 };
 
 const styles = StyleSheet.create({
