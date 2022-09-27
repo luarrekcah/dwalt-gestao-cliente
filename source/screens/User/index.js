@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {
   Image,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -45,9 +46,27 @@ const Business = ({navigation}) => {
           <TextSection value="Conta" />
           <Button icon="logout" value="Sair da Conta" />
           <TextSection value="Outros" />
-          <Button icon="info" value="Termos de Uso" />
-          <Button icon="info" value="Política de Privacidade" />
-          <Button icon="warning" value="Relatar Problema" />
+          <Button
+            icon="info"
+            value="Termos de Uso"
+            onPress={() => {
+              Linking.openURL('https://www.dlwalt.com/termos');
+            }}
+          />
+          <Button
+            icon="info"
+            value="Política de Privacidade"
+            onPress={() => {
+              Linking.openURL('https://www.dlwalt.com/politica');
+            }}
+          />
+          <Button
+            icon="warning"
+            value="Relatar Problema"
+            onPress={() => {
+              Linking.openURL('https://wa.me/+556892402096');
+            }}
+          />
           <Button icon="android" value="Versão" description="v1.0.0" />
         </ScrollView>
       </View>
