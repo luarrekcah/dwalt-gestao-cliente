@@ -1,5 +1,11 @@
 import React from 'react';
-import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from './colorScheme';
 
@@ -36,6 +42,14 @@ export const Button = ({
         <Text style={styles.buttonDesc}>{description}</Text>
       </View>
     </TouchableOpacity>
+  );
+};
+
+export const LoadingActivity = () => {
+  return (
+    <View style={[styles.container, styles.horizontal]}>
+      <ActivityIndicator size="large" color={Colors.whitetheme.primary} />
+    </View>
   );
 };
 
@@ -76,5 +90,14 @@ const styles = new StyleSheet.create({
     color: Colors.whitetheme.gray,
     fontSize: 12,
     marginLeft: 20,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
   },
 });

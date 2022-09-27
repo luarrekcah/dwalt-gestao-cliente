@@ -1,32 +1,49 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {
-  Image,
-  Linking,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../global/colorScheme';
-import {Button, TextSection} from '../../global/Components';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Button, LoadingActivity, TextSection} from '../../global/Components';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Business = ({navigation}) => {
   const [user, setUser] = React.useState();
 
   React.useEffect(() => {
+    GoogleSignin.configure({
+      androidClientId:
+        '335158766865-b8m8hjlf5jm3kmegg8494no8i68jqi0n.apps.googleusercontent.com',
+    });
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadData();
+    });
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigation]);
+
+  const loadData = () => {
     AsyncStorage.getItem('user').then(data => {
       const userdata = JSON.parse(data);
       console.log(userdata);
       setUser(userdata);
     });
-  }, []);
+  };
 
-  if (user === undefined) {
-    return <Text>Carregando</Text>;
+  const signOut = async () => {
+    try {
+      await GoogleSignin.signInSilently();
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      setUser(null);
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      await AsyncStorage.setItem('logged', JSON.stringify({logged: false}));
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (user === undefined || user === null) {
+    return <LoadingActivity />;
   } else {
     return (
       <View style={styles.container}>
@@ -44,7 +61,7 @@ const Business = ({navigation}) => {
             <Text style={styles.email}>{user.email}</Text>
           </View>
           <TextSection value="Conta" />
-          <Button icon="logout" value="Sair da Conta" />
+          <Button icon="logout" value="Sair da Conta" onPress={signOut} />
           <TextSection value="Outros" />
           <Button
             icon="info"
@@ -79,8 +96,8 @@ const styles = new StyleSheet.create({
     padding: 10,
   },
   bussinessLogo: {
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 200,
     alignSelf: 'center',
     margin: 30,
     borderRadius: 30,

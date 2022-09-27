@@ -34,7 +34,16 @@ const Home = ({navigation}) => {
         <ScrollView horizontal>
           <MiniCard textValue="2 Projetos" iconName="folder" iconSize={40} />
           <MiniCard textValue="64 kWp" iconName="flash-on" iconSize={40} />
-          <MiniCard textValue="0" iconName="check" iconSize={40} />
+          <MiniCard
+            textValue="94344 kWh/mês"
+            iconName="flash-on"
+            iconSize={40}
+          />
+          <MiniCard
+            textValue="95% Economia"
+            iconName="flash-on"
+            iconSize={40}
+          />
         </ScrollView>
         <TextSection value={'Projetos'} />
         <TouchableOpacity style={{marginVertical: 10}}>
@@ -46,7 +55,7 @@ const Home = ({navigation}) => {
               <Text style={styles.projectCategory}>Usina</Text>
               <View style={styles.bottomProject}>
                 <Text style={styles.bottomKwp}>
-                  <Icon name="power" size={20} color="#fff" /> 32,89 kWp
+                  <Icon name="flash-on" size={20} color="#fff" /> 32,89 kWp
                 </Text>
                 <Text style={styles.bottomStatus}>Status: Em andamento</Text>
               </View>
@@ -63,7 +72,7 @@ const Home = ({navigation}) => {
               <Text style={styles.projectCategory}>Usina</Text>
               <View style={styles.bottomProject}>
                 <Text style={styles.bottomKwp}>
-                  <Icon name="power" size={20} color="#fff" /> 32,89 kWp
+                  <Icon name="flash-on" size={20} color="#fff" /> 32,89 kWp
                 </Text>
                 <Text style={styles.bottomStatus}>Status: Em andamento</Text>
               </View>
