@@ -18,21 +18,21 @@ const Main = ({navigation}) => {
         tabBarStyle: {backgroundColor: Colors.whitetheme.primary},
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
-          if (route.name === 'Main') {
+          if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Empresa') {
             iconName = focused ? 'business' : 'business-outline';
           } else if (route.name === 'Usuário') {
-            iconName = focused ? 'account-circle' : 'account-circle-outline';
+            iconName = focused ? 'people' : 'people-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#fff',
-        tabBarInactiveTintColor: 'gray',
+        tabBarInactiveTintColor: '#c9c9c9',
       })}
       initialRouteName="Main">
       <Tab.Screen name="Empresa" component={Business} />
-      <Tab.Screen name="Main" component={Home} />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Usuário" component={User} />
     </Tab.Navigator>
   );

@@ -104,7 +104,7 @@ const Intro = ({navigation}) => {
   if (!logged) {
     return <RenderSlides />;
   } else {
-    navigation.navigate('Main');
+    return navigation.navigate('Main');
   }
 };
 

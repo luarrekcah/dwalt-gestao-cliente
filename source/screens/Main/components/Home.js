@@ -28,6 +28,7 @@ const Home = ({navigation}) => {
         <Text style={styles.welcome}>
           Bem vindo{user === undefined ? '' : ' ' + user.nome}!
         </Text>
+        <Text style={styles.linkedOn}>Vinculado a D Walt Engenharia.</Text>
         <ScrollView horizontal>
           <View style={styles.miniCard}>
             <Icon name="folder" size={40} color="#fff" />
@@ -90,7 +91,12 @@ const styles = new StyleSheet.create({
     color: Colors.whitetheme.primary,
     fontSize: 25,
     fontWeight: 'bold',
-    marginVertical: 20,
+    marginTop: 15,
+  },
+  linkedOn: {
+    color: Colors.whitetheme.gray,
+    fontSize: 20,
+    marginBottom: 20,
   },
   miniCard: {
     backgroundColor: Colors.whitetheme.primary,
