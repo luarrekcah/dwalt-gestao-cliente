@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../../global/colorScheme';
+import {MiniCard, TextSection} from '../../../global/Components';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -30,20 +31,11 @@ const Home = ({navigation}) => {
         </Text>
         <Text style={styles.linkedOn}>Vinculado a D Walt Engenharia.</Text>
         <ScrollView horizontal>
-          <View style={styles.miniCard}>
-            <Icon name="folder" size={40} color="#fff" />
-            <Text style={styles.textCard}>2 projetos</Text>
-          </View>
-          <View style={styles.miniCard}>
-            <Icon name="flash-on" size={40} color="#fff" />
-            <Text style={styles.textCard}>64 kWp</Text>
-          </View>
-          <View style={styles.miniCard}>
-            <Icon name="check" size={40} color="#fff" />
-            <Text style={styles.textCard}>0 Conluídos</Text>
-          </View>
+          <MiniCard textValue="2 Projetos" iconName="folder" iconSize={40} />
+          <MiniCard textValue="64 kWp" iconName="flash-on" iconSize={40} />
+          <MiniCard textValue="0 Concluídos" iconName="check" iconSize={40} />
         </ScrollView>
-        <Text style={styles.textSection}>Projetos</Text>
+        <TextSection value={'Projetos'} />
         <TouchableOpacity style={{marginVertical: 10}}>
           <ImageBackground
             imageStyle={{borderRadius: 20}}
@@ -98,20 +90,6 @@ const styles = new StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
   },
-  miniCard: {
-    backgroundColor: Colors.whitetheme.primary,
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginRight: 10,
-    width: 100,
-  },
-  textCard: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
   projectCard: {
     padding: 30,
     borderRadius: 20,
@@ -139,13 +117,6 @@ const styles = new StyleSheet.create({
     color: Colors.whitetheme.gray,
     fontSize: 15,
     fontWeight: 'bold',
-  },
-  textSection: {
-    color: Colors.whitetheme.gray,
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginHorizontal: 10,
-    marginVertical: 10,
   },
 });
 
