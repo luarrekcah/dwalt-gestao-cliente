@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from './colorScheme';
 
@@ -21,13 +21,30 @@ export const MiniCard = ({
   );
 };
 
+export const Button = ({
+  icon = 'info',
+  value,
+  description,
+  onPress,
+  ...rest
+}) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.button}>
+      <Icon name={icon} size={25} color={Colors.whitetheme.primary} />
+      <View>
+        <Text style={styles.buttonText}>{value}</Text>
+        <Text style={styles.buttonDesc}>{description}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 const styles = new StyleSheet.create({
   textSection: {
     color: Colors.whitetheme.gray,
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: 'bold',
-    marginHorizontal: 10,
-    marginVertical: 10,
+    marginVertical: 20,
   },
   miniCard: {
     backgroundColor: Colors.whitetheme.primary,
@@ -42,5 +59,22 @@ const styles = new StyleSheet.create({
     color: '#fff',
     fontSize: 15,
     fontWeight: 'bold',
+  },
+  button: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginLeft: 15,
+    marginVertical: 20,
+  },
+  buttonText: {
+    color: Colors.whitetheme.primary,
+    fontSize: 15,
+    marginLeft: 20,
+  },
+  buttonDesc: {
+    color: Colors.whitetheme.gray,
+    fontSize: 12,
+    marginLeft: 20,
   },
 });

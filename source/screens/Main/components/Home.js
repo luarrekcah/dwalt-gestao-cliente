@@ -30,10 +30,11 @@ const Home = ({navigation}) => {
           Bem vindo{user === undefined ? '' : ' ' + user.nome}!
         </Text>
         <Text style={styles.linkedOn}>Vinculado a D Walt Engenharia.</Text>
+        <TextSection value={'Informações'} />
         <ScrollView horizontal>
           <MiniCard textValue="2 Projetos" iconName="folder" iconSize={40} />
           <MiniCard textValue="64 kWp" iconName="flash-on" iconSize={40} />
-          <MiniCard textValue="0 Concluídos" iconName="check" iconSize={40} />
+          <MiniCard textValue="0" iconName="check" iconSize={40} />
         </ScrollView>
         <TextSection value={'Projetos'} />
         <TouchableOpacity style={{marginVertical: 10}}>
