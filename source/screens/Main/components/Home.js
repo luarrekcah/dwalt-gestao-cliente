@@ -44,10 +44,10 @@ const Home = ({navigation}) => {
           database()
             .ref('/gestaoempresa/empresa')
             .once('value')
-            .then(snapshot => {
+            .then(snapshotB => {
               let allBusiness = [];
               if (snapshot.val() !== null) {
-                allBusiness = snapshot.val();
+                allBusiness = snapshotB.val();
               }
               const myBusiness = allBusiness.filter(item => {
                 return item._id === userdata.email_link;
@@ -64,7 +64,6 @@ const Home = ({navigation}) => {
       loadData();
     });
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation, user]);
 
   const getKwp = () => {
