@@ -1,43 +1,65 @@
 import React from 'react';
 import {Text, View, Image, StyleSheet, ScrollView} from 'react-native';
 import Colors from '../../global/colorScheme';
-import {TextSection} from '../../global/Components';
+import {LoadingActivity, TextSection} from '../../global/Components';
+import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Business = ({navigation}) => {
-  return (
-    <View style={styles.container}>
-      <ScrollView>
-        <Image
-          style={styles.bussinessLogo}
-          source={{
-            uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
-          }}
-        />
-        <Text style={styles.bussinessName}>D Walt Engenharia</Text>
-        <TextSection value="Sobre a empresa" />
-        <Text style={styles.bussinessDesc}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-          sapien ipsum, rutrum at tempus at, feugiat sed est. Praesent placerat
-          elit nisl, ut commodo dolor porta quis. In egestas diam non turpis
-          laoreet, in imperdiet leo lobortis. Duis pulvinar nisl nec dignissim
-          tempus. Nunc semper ex neque, non mattis dui tempor sed. Fusce blandit
-          ante in dignissim maximus. Phasellus blandit hendrerit ligula
-          elementum semper. Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit. In est est, scelerisque vitae laoreet in, tristique ac dui.
-          Proin porttitor ipsum congue leo pharetra, vitae commodo mi fringilla.
-          Morbi erat diam, placerat vitae arcu a, facilisis tincidunt ipsum.
-          Donec luctus bibendum iaculis. Nullam aliquam dapibus magna, id ornare
-          neque hendrerit at. Donec at tortor erat. Fusce luctus purus vel
-          lectus dapibus efficitur. Nullam fringilla, lacus non molestie
-          consectetur, justo arcu varius massa, id commodo metus diam a est. Nam
-          in dolor sit amet magna varius feugiat. Sed suscipit quam eu varius
-          egestas. Nunc eget sagittis arcu. Pellentesque neque nisl, lobortis
-          sed erat eu, laoreet vestibulum elit. Cras sit amet quam orci. Cras
-          tincidunt nisi et lectus pulvinar ullamcorper.
-        </Text>
-      </ScrollView>
-    </View>
-  );
+  const [business, setBusiness] = React.useState();
+  const [user, setUser] = React.useState();
+  const [loading, setLoading] = React.useState(true);
+
+  const loadData = async () => {
+    await AsyncStorage.getItem('user').then(data => {
+      const userdata = JSON.parse(data);
+      setUser(userdata);
+      database()
+        .ref('/gestaoempresa/empresa')
+        .once('value')
+        .then(snapshot => {
+          let allBusiness = [];
+          if (snapshot.val() !== null) {
+            allBusiness = snapshot.val();
+          }
+          const myBusiness = allBusiness.filter(item => {
+            return item._id === userdata.email_link;
+          });
+          setBusiness(myBusiness[0]);
+          setLoading(false);
+        });
+    });
+  };
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadData();
+    });
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigation, user]);
+
+  if (loading) {
+    return <LoadingActivity />;
+  } else {
+    return (
+      <View style={styles.container}>
+        <ScrollView>
+          <Image
+            style={styles.bussinessLogo}
+            source={{
+              uri: business.profile.logo,
+            }}
+          />
+          <Text style={styles.bussinessName}>
+            {business.documents.nome_fantasia}
+          </Text>
+          <TextSection value="Sobre a empresa" />
+          <Text style={styles.bussinessDesc}>{business.profile.about}</Text>
+        </ScrollView>
+      </View>
+    );
+  }
 };
 
 const styles = new StyleSheet.create({
