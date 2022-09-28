@@ -118,7 +118,12 @@ const Home = ({navigation}) => {
             <View>
               {projects.map((item, index) => {
                 return (
-                  <TouchableOpacity style={styles.marginCard} key={index}>
+                  <TouchableOpacity
+                    style={styles.marginCard}
+                    key={index}
+                    onPress={() =>
+                      navigation.navigate('ProjectDetails', {project: item})
+                    }>
                     <ImageBackground
                       imageStyle={styles.imageCard}
                       source={require('../../../../assets/home/bannerbackground.jpg')}>
