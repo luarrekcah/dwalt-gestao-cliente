@@ -4,19 +4,24 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 import Colors from '../../global/colorScheme';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LoadingActivity} from '../../global/Components';
 
 const Intro = ({navigation}) => {
   const [logged, setLogged] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     AsyncStorage.getItem('logged').then(data => {
       if (data === null) {
         setLogged(false);
+        setLoading(false);
       } else {
         setLogged(JSON.parse(data).logged);
+        setLoading(false);
+        navigation.navigate('Main');
       }
     });
-  }, []);
+  }, [navigation]);
 
   const slides = [
     {
@@ -100,11 +105,10 @@ const Intro = ({navigation}) => {
       </View>
     );
   };
-
-  if (!logged) {
-    return <RenderSlides />;
+  if (loading) {
+    return <LoadingActivity />;
   } else {
-    return navigation.navigate('Main');
+    return <RenderSlides />;
   }
 };
 

@@ -22,30 +22,29 @@ const Home = ({navigation}) => {
     await AsyncStorage.getItem('user').then(data => {
       const userdata = JSON.parse(data);
       setUser(userdata);
+      database()
+        .ref('/gestaoempresa/projetos')
+        .once('value')
+        .then(snapshot => {
+          let allProjects = [];
+          if (snapshot.val() !== null) {
+            allProjects = snapshot.val();
+          }
+          const myProjects = allProjects.filter(item => {
+            return item.emailApp === userdata.email;
+          });
+          setProjects(myProjects);
+        });
     });
   };
 
   React.useEffect(() => {
-    database()
-      .ref('/gestaoempresa/projetos')
-      .once('value')
-      .then(snapshot => {
-        let allProjects = [];
-        if (snapshot.val() !== null) {
-          allProjects = snapshot.val();
-        }
-        console.log(user);
-        const myProjects = allProjects.filter(item => {
-          return item.emailApp === user.email;
-        });
-        setProjects(myProjects);
-      });
     const unsubscribe = navigation.addListener('focus', () => {
       loadData();
     });
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigation]);
+  }, [navigation, user]);
 
   const getKwp = () => {
     let kwpTotal = 0;
