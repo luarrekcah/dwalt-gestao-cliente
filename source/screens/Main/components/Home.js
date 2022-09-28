@@ -29,7 +29,7 @@ const Home = ({navigation}) => {
     database()
       .ref('/gestaoempresa/projetos')
       .once('value')
-      .then(async snapshot => {
+      .then(snapshot => {
         let allProjects = [];
         if (snapshot.val() !== null) {
           allProjects = snapshot.val();
@@ -40,8 +40,8 @@ const Home = ({navigation}) => {
         });
         setProjects(myProjects);
       });
-    const unsubscribe = navigation.addListener('focus', async () => {
-      await loadData();
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadData();
     });
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
