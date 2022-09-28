@@ -10,18 +10,51 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../../global/colorScheme';
 import {MiniCard, TextSection} from '../../../global/Components';
+import database from '@react-native-firebase/database';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Home = ({navigation}) => {
   const [user, setUser] = React.useState();
+  const [projects, setProjects] = React.useState([]);
 
-  React.useEffect(() => {
-    AsyncStorage.getItem('user').then(data => {
+  const loadData = async () => {
+    await AsyncStorage.getItem('user').then(data => {
       const userdata = JSON.parse(data);
       setUser(userdata);
     });
-  }, []);
+  };
+
+  React.useEffect(() => {
+    database()
+      .ref('/gestaoempresa/projetos')
+      .once('value')
+      .then(async snapshot => {
+        let allProjects = [];
+        if (snapshot.val() !== null) {
+          allProjects = snapshot.val();
+        }
+        console.log(user);
+        const myProjects = allProjects.filter(item => {
+          return item.emailApp === user.email;
+        });
+        setProjects(myProjects);
+      });
+    const unsubscribe = navigation.addListener('focus', async () => {
+      await loadData();
+    });
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigation]);
+
+  const getKwp = () => {
+    let kwpTotal = 0;
+    projects.forEach(item => {
+      kwpTotal += Number(item.kwp);
+    });
+    console.log(kwpTotal);
+    return kwpTotal;
+  };
 
   return (
     <View style={styles.container}>
@@ -32,10 +65,18 @@ const Home = ({navigation}) => {
         <Text style={styles.linkedOn}>Vinculado a D Walt Engenharia.</Text>
         <TextSection value={'Informações'} />
         <ScrollView horizontal>
-          <MiniCard textValue="2 Projetos" iconName="folder" iconSize={40} />
-          <MiniCard textValue="64 kWp" iconName="flash-on" iconSize={40} />
           <MiniCard
-            textValue="94344 kWh/mês"
+            textValue={projects.length + ' projetos'}
+            iconName="folder"
+            iconSize={40}
+          />
+          <MiniCard
+            textValue={getKwp() + ' kWp'}
+            iconName="flash-on"
+            iconSize={40}
+          />
+          <MiniCard
+            textValue={getKwp() * 30 * 4.5 + ' kWh/mês'}
             iconName="flash-on"
             iconSize={40}
           />
@@ -46,39 +87,40 @@ const Home = ({navigation}) => {
           />
         </ScrollView>
         <TextSection value={'Projetos'} />
-        <TouchableOpacity style={{marginVertical: 10}}>
-          <ImageBackground
-            imageStyle={{borderRadius: 20}}
-            source={require('../../../../assets/home/bannerbackground.jpg')}>
-            <View style={styles.projectCard}>
-              <Text style={styles.projectTitle}>Projeto Nome</Text>
-              <Text style={styles.projectCategory}>Usina</Text>
-              <View style={styles.bottomProject}>
-                <Text style={styles.bottomKwp}>
-                  <Icon name="flash-on" size={20} color="#fff" /> 32,89 kWp
-                </Text>
-                <Text style={styles.bottomStatus}>Status: Em andamento</Text>
-              </View>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={{marginVertical: 10}}>
-          <ImageBackground
-            imageStyle={{borderRadius: 20}}
-            source={require('../../../../assets/home/bannerbackground.jpg')}>
-            <View style={styles.projectCard}>
-              <Text style={styles.projectTitle}>Projeto Nome</Text>
-              <Text style={styles.projectCategory}>Usina</Text>
-              <View style={styles.bottomProject}>
-                <Text style={styles.bottomKwp}>
-                  <Icon name="flash-on" size={20} color="#fff" /> 32,89 kWp
-                </Text>
-                <Text style={styles.bottomStatus}>Status: Em andamento</Text>
-              </View>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
+        {projects === null || projects.length === 0 ? (
+          <View>
+            <Text style={styles.nullWarn}>Sem projetos</Text>
+          </View>
+        ) : (
+          <View>
+            {projects.map((item, index) => {
+              return (
+                <TouchableOpacity style={styles.marginCard} key={index}>
+                  <ImageBackground
+                    imageStyle={styles.imageCard}
+                    source={require('../../../../assets/home/bannerbackground.jpg')}>
+                    <View style={styles.projectCard}>
+                      <Text style={styles.projectTitle}>
+                        {item.apelidoProjeto}
+                      </Text>
+                      <Text style={styles.projectCategory}>Usina</Text>
+                      <View style={styles.bottomProject}>
+                        <Text style={styles.bottomKwp}>
+                          <Icon name="flash-on" size={20} color="#fff" />
+                          {item.kwp}
+                          kWp
+                        </Text>
+                        <Text style={styles.bottomStatus}>
+                          Status: {item.Status}
+                        </Text>
+                      </View>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -100,11 +142,14 @@ const styles = new StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
   },
+  nullWarn: {color: '#000000', alignSelf: 'center'},
+  marginCard: {marginVertical: 10},
   projectCard: {
     padding: 30,
     borderRadius: 20,
     height: 200,
   },
+  imageCard: {borderRadius: 20},
   projectTitle: {
     color: '#fff',
     fontSize: 25,
