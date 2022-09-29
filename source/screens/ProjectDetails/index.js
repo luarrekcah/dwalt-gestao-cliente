@@ -11,14 +11,33 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../../global/colorScheme';
 import {TextSection} from '../../global/Components';
+import ImagePicker from 'react-native-image-crop-picker';
+import ImageView from 'react-native-image-viewing';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
   const {project} = route.params;
+  const [media, setmedia] = React.useState([]);
+  const [allMedia, setAllmedia] = React.useState([]);
+  const [visibleImageViewer, setIsVisibleImageViewer] = React.useState(false);
+  const [viewerURI, setViewerURI] = React.useState([]);
+
+  const pickImages = () => {
+    ImagePicker.openPicker({
+      includeBase64: true,
+      multiple: true,
+    }).then(images => {
+      let base64Imgs = [];
+      images.forEach((item, i) => {
+        base64Imgs.push('data:image/png;base64,' + item.data);
+      });
+      setmedia(base64Imgs);
+    });
+  };
 
   const RenderCollectedItems = () => {
     return (
-      <ScrollView horizontal>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <Text style={styles.collectedCard}>
           Nome Completo
           <Icon
@@ -76,6 +95,16 @@ const ProjectDetails = ({navigation, route}) => {
 
   return (
     <ScrollView style={{backgroundColor: '#fff'}}>
+      <ImageView
+        images={[
+          {
+            uri: viewerURI,
+          },
+        ]}
+        imageIndex={0}
+        visible={visibleImageViewer}
+        onRequestClose={() => setIsVisibleImageViewer(false)}
+      />
       <ImageBackground
         style={styles.backgroundImage}
         source={require('../../../assets/home/bannerbackground.jpg')}>
@@ -95,39 +124,21 @@ const ProjectDetails = ({navigation, route}) => {
       <View style={styles.container}>
         <TextSection value={'Fotos'} />
         <ScrollView horizontal>
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <ImageBackground
-            style={styles.backgroundImagePhoto}
-            source={require('../../../assets/home/bannerbackground.jpg')}
-          />
-          <TouchableOpacity style={styles.iconAdd}>
+          {media.map(item => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  setViewerURI(item);
+                  setIsVisibleImageViewer(true);
+                }}>
+                <ImageBackground
+                  style={styles.backgroundImagePhoto}
+                  source={{uri: item}}
+                />
+              </TouchableOpacity>
+            );
+          })}
+          <TouchableOpacity style={styles.iconAdd} onPress={pickImages}>
             <Icon name="add" size={40} color="#fff" />
           </TouchableOpacity>
         </ScrollView>
@@ -208,7 +219,8 @@ const styles = new StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 60,
+    width: 80,
+    height: 140,
   },
 });
 

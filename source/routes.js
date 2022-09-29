@@ -34,7 +34,7 @@ const Routes = () => {
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('');
+                  Linking.openURL('https://www.dlwalt.com/faq');
                 }}>
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
@@ -53,7 +53,7 @@ const Routes = () => {
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('');
+                  Linking.openURL('https://www.dlwalt.com/faq');
                 }}>
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
@@ -72,7 +72,7 @@ const Routes = () => {
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('');
+                  Linking.openURL('https://www.dlwalt.com/faq');
                 }}>
                 <Icon name="help" size={30} color="#fff" />
               </TouchableOpacity>
@@ -99,7 +99,7 @@ const Routes = () => {
             headerRight: () => (
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL('');
+                  Linking.openURL('https://www.dlwalt.com');
                 }}>
                 <Icon name="settings" size={30} color="#fff" />
               </TouchableOpacity>
