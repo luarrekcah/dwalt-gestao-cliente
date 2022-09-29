@@ -53,6 +53,40 @@ export const LoadingActivity = () => {
   );
 };
 
+export const DocumentCard = ({title, onPress, haveContent}) => {
+  if (haveContent) {
+    return (
+      <View style={styles.documentsCard}>
+        <Icon name="check" size={30} color="#fff" />
+        <Text style={styles.documentsTitle}>{title}</Text>
+        <TouchableOpacity style={styles.documentsButton} onPress={onPress}>
+          <Text style={styles.documentsButtonText}>Ver</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return (
+      <View
+        style={[
+          styles.documentsCard,
+          {backgroundColor: Colors.whitetheme.warning},
+        ]}>
+        <Icon name="warning" size={30} color="#fff" />
+        <Text style={styles.documentsTitle}>{title}</Text>
+        <TouchableOpacity style={styles.documentsButton} onPress={onPress}>
+          <Text
+            style={[
+              styles.documentsButtonText,
+              {color: Colors.whitetheme.warning},
+            ]}>
+            Documentação{'\n'}em falta
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+};
+
 const styles = new StyleSheet.create({
   textSection: {
     color: Colors.whitetheme.gray,
@@ -99,5 +133,30 @@ const styles = new StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10,
+  },
+  documentsCard: {
+    backgroundColor: Colors.whitetheme.primary,
+    borderRadius: 10,
+    padding: 40,
+    alignContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  documentsTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  documentsButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 35,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  documentsButtonText: {
+    color: Colors.whitetheme.primary,
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });

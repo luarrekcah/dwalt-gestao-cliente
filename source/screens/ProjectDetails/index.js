@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../../global/colorScheme';
-import {TextSection} from '../../global/Components';
+import {DocumentCard, TextSection} from '../../global/Components';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
 import database from '@react-native-firebase/database';
@@ -164,6 +164,16 @@ const ProjectDetails = ({navigation, route}) => {
         </ScrollView>
         <TextSection value={'Dados Salvos'} />
         <RenderCollectedItems />
+        <TextSection value={'Documentos'} />
+        <ScrollView horizontal>
+          <DocumentCard title={'A.R.T'} haveContent={true} />
+          <DocumentCard title={'Procuração'} haveContent={false} />
+          <DocumentCard title={'Solicitação de Acesso'} haveContent={false} />
+          <DocumentCard title={'Memorial Técnico'} haveContent={false} />
+          <DocumentCard title={'Declaração'} haveContent={false} />
+          <DocumentCard title={'Projeto'} haveContent={false} />
+          <DocumentCard title={'Carta de Aprovação'} haveContent={false} />
+        </ScrollView>
         <TextSection value={'Localização'} />
         <TouchableOpacity
           onPress={() => {
@@ -172,7 +182,7 @@ const ProjectDetails = ({navigation, route}) => {
             );
           }}>
           <ImageBackground
-            style={{height: 250, alignItems: 'center', paddingTop: 40}}
+            style={styles.mapBackground}
             source={require('../../../assets/projectdetails/banner.jpg')}>
             <Text>Clique para abrir o Maps</Text>
           </ImageBackground>
@@ -242,6 +252,7 @@ const styles = new StyleSheet.create({
     width: 80,
     height: 140,
   },
+  mapBackground: {height: 250, alignItems: 'center', paddingTop: 40},
 });
 
 export default ProjectDetails;

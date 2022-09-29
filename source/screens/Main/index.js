@@ -30,7 +30,7 @@ const Main = ({navigation}) => {
         tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: '#c9c9c9',
       })}
-      initialRouteName="Main">
+      initialRouteName="Home">
       <Tab.Screen name="Empresa" component={Business} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Usuário" component={User} />
