@@ -132,6 +132,14 @@ def reactNativeArchitectures() {
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+
+def getVersionFromNpm() {
+    def inputFile = new File("$rootDir/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+
+    return packageJson["version"]
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -142,7 +150,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName getVersionFromNpm()
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
