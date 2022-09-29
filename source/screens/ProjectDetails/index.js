@@ -13,12 +13,12 @@ import Colors from '../../global/colorScheme';
 import {TextSection} from '../../global/Components';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
+import database from '@react-native-firebase/database';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
   const {project} = route.params;
-  const [media, setmedia] = React.useState([]);
-  const [allMedia, setAllmedia] = React.useState([]);
+  const [allMedia, setAllmedia] = React.useState(project.photos || []);
   const [visibleImageViewer, setIsVisibleImageViewer] = React.useState(false);
   const [viewerURI, setViewerURI] = React.useState([]);
 
@@ -27,11 +27,30 @@ const ProjectDetails = ({navigation, route}) => {
       includeBase64: true,
       multiple: true,
     }).then(images => {
-      let base64Imgs = [];
-      images.forEach((item, i) => {
-        base64Imgs.push('data:image/png;base64,' + item.data);
-      });
-      setmedia(base64Imgs);
+      database()
+        .ref('/gestaoempresa/projetos')
+        .once('value')
+        .then(snapshot => {
+          let allProjects = [];
+          if (snapshot.val() !== null) {
+            allProjects = snapshot.val();
+          }
+          allProjects.map(projeto => {
+            if (projeto._id === project._id) {
+              images.forEach((item, i) => {
+                if (projeto.photos === null || projeto.photos === undefined) {
+                  projeto.photos = [];
+                }
+                projeto.photos.push('data:image/png;base64,' + item.data);
+              });
+              setAllmedia(projeto.photos);
+              return projeto;
+            } else {
+              return projeto;
+            }
+          });
+          database().ref('/gestaoempresa/projetos').set(allProjects);
+        });
     });
   };
 
@@ -124,9 +143,10 @@ const ProjectDetails = ({navigation, route}) => {
       <View style={styles.container}>
         <TextSection value={'Fotos'} />
         <ScrollView horizontal>
-          {media.map(item => {
+          {allMedia.map((item, index) => {
             return (
               <TouchableOpacity
+                key={index}
                 onPress={() => {
                   setViewerURI(item);
                   setIsVisibleImageViewer(true);
