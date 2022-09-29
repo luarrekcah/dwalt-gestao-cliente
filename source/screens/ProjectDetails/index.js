@@ -113,7 +113,7 @@ const ProjectDetails = ({navigation, route}) => {
   };
 
   return (
-    <ScrollView style={{backgroundColor: '#fff'}}>
+    <ScrollView style={styles.white}>
       <ImageView
         images={[
           {
@@ -199,6 +199,9 @@ const styles = new StyleSheet.create({
     borderTopRightRadius: 20,
     backgroundColor: '#fff',
     top: -40,
+  },
+  white: {
+    backgroundColor: '#fff',
   },
   backgroundImage: {
     height: 250,
