@@ -60,7 +60,7 @@ const Home = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
       loadData();
     });
     return unsubscribe;

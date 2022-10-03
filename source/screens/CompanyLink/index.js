@@ -84,6 +84,7 @@ const CompanyLink = ({navigation}) => {
                 JSON.stringify({logged: true}),
               );
               setTimeout(() => {
+                setModalVisible(false)
                 navigation.navigate('Main');
               }, 1000 * 5);
               return;
