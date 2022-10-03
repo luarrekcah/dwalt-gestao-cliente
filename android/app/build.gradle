@@ -308,6 +308,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
     compile project(':react-native-file-viewer')
+    implementation project(':react-native-fs')
 }
 
 if (isNewArchitectureEnabled()) {
