@@ -131,7 +131,9 @@ const Home = ({navigation}) => {
                         <Text style={styles.projectTitle}>
                           {item.apelidoProjeto}
                         </Text>
-                        <Text style={styles.projectCategory}>Usina</Text>
+                        <Text style={styles.projectCategory}>
+                          {item.category}
+                        </Text>
                         <View style={styles.bottomProject}>
                           <Text style={styles.bottomKwp}>
                             <Icon name="flash-on" size={20} color="#fff" />

@@ -129,7 +129,7 @@ const ProjectDetails = ({navigation, route}) => {
         source={require('../../../assets/home/bannerbackground.jpg')}>
         <View style={styles.projectCard}>
           <Text style={styles.projectTitle}>{project.apelidoProjeto}</Text>
-          <Text style={styles.projectCategory}>Usina</Text>
+          <Text style={styles.projectCategory}>{project.category}</Text>
           <View style={styles.bottomProject}>
             <Text style={styles.bottomKwp}>
               <Icon name="flash-on" size={20} color="#fff" />
