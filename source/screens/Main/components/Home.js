@@ -167,13 +167,13 @@ const styles = new StyleSheet.create({
     backgroundColor: Colors.whitetheme.primary,
   },
   welcome: {
-    color: '#fff',
+    color: '#f5f5f5',
     fontSize: 25,
     fontWeight: 'bold',
     marginTop: 15,
   },
   linkedOn: {
-    color: '#fff',
+    color: '#d1d1d1',
     fontSize: 20,
     marginBottom: 20,
   },
