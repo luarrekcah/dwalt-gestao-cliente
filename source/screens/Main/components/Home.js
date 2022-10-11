@@ -80,77 +80,81 @@ const Home = ({navigation}) => {
     return (
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.welcome}>
-            Bem vindo{user === undefined ? '' : ' ' + user.nome}!
-          </Text>
-          <Text style={styles.linkedOn}>
-            Vinculado a {business.documents.nome_fantasia}
-          </Text>
-          <TextSection value={'Informações'} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <MiniCard
-              textValue={projects.length + ' projetos'}
-              iconName="folder"
-              iconSize={40}
-            />
-            <MiniCard
-              textValue={getKwp() + ' kWp'}
-              iconName="flash-on"
-              iconSize={40}
-            />
-            <MiniCard
-              textValue={getKwp() * 30 * 4.5 + ' kWh/mês'}
-              iconName="flash-on"
-              iconSize={40}
-            />
-            <MiniCard
-              textValue="95% Economia"
-              iconName="flash-on"
-              iconSize={40}
-            />
-          </ScrollView>
-          <TextSection value={'Projetos'} />
-          {projects === null || projects.length === 0 ? (
-            <View>
-              <Text style={styles.nullWarn}>Sem projetos</Text>
-            </View>
-          ) : (
-            <View>
-              {projects.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.marginCard}
-                    key={index}
-                    onPress={() =>
-                      navigation.navigate('ProjectDetails', {project: item})
-                    }>
-                    <ImageBackground
-                      imageStyle={styles.imageCard}
-                      source={require('../../../../assets/home/bannerbackground.jpg')}>
-                      <View style={styles.projectCard}>
-                        <Text style={styles.projectTitle}>
-                          {item.apelidoProjeto}
-                        </Text>
-                        <Text style={styles.projectCategory}>
-                          {item.category}
-                        </Text>
-                        <View style={styles.bottomProject}>
-                          <Text style={styles.bottomKwp}>
-                            <Icon name="flash-on" size={20} color="#fff" />
-                            {item.kwp}
-                            kWp
+          <View style={styles.headerDetail}>
+            <Text style={styles.welcome}>
+              Bem vindo{user === undefined ? '' : ' ' + user.nome}!
+            </Text>
+            <Text style={styles.linkedOn}>
+              Vinculado a {business.documents.nome_fantasia}
+            </Text>
+          </View>
+          <View style={styles.backgroundDetail}>
+            <TextSection value={'Informações'} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <MiniCard
+                textValue={projects.length + ' projetos'}
+                iconName="folder"
+                iconSize={40}
+              />
+              <MiniCard
+                textValue={getKwp() + ' kWp'}
+                iconName="flash-on"
+                iconSize={40}
+              />
+              <MiniCard
+                textValue={getKwp() * 30 * 4.5 + ' kWh/mês'}
+                iconName="flash-on"
+                iconSize={40}
+              />
+              <MiniCard
+                textValue="95% Economia"
+                iconName="flash-on"
+                iconSize={40}
+              />
+            </ScrollView>
+            <TextSection value={'Projetos'} />
+            {projects === null || projects.length === 0 ? (
+              <View>
+                <Text style={styles.nullWarn}>Sem projetos</Text>
+              </View>
+            ) : (
+              <View>
+                {projects.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      style={styles.marginCard}
+                      key={index}
+                      onPress={() =>
+                        navigation.navigate('ProjectDetails', {project: item})
+                      }>
+                      <ImageBackground
+                        imageStyle={styles.imageCard}
+                        source={require('../../../../assets/home/bannerbackground.jpg')}>
+                        <View style={styles.projectCard}>
+                          <Text style={styles.projectTitle}>
+                            {item.apelidoProjeto}
                           </Text>
-                          <Text style={styles.bottomStatus}>
-                            Status: {item.Status}
+                          <Text style={styles.projectCategory}>
+                            {item.category}
                           </Text>
+                          <View style={styles.bottomProject}>
+                            <Text style={styles.bottomKwp}>
+                              <Icon name="flash-on" size={20} color="#fff" />
+                              {item.kwp}
+                              kWp
+                            </Text>
+                            <Text style={styles.bottomStatus}>
+                              Status: {item.Status}
+                            </Text>
+                          </View>
                         </View>
-                      </View>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
+                      </ImageBackground>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
+          </View>
         </ScrollView>
       </View>
     );
@@ -160,18 +164,25 @@ const Home = ({navigation}) => {
 const styles = new StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    backgroundColor: Colors.whitetheme.primary,
   },
   welcome: {
-    color: Colors.whitetheme.primary,
+    color: '#fff',
     fontSize: 25,
     fontWeight: 'bold',
     marginTop: 15,
   },
   linkedOn: {
-    color: Colors.whitetheme.gray,
+    color: '#fff',
     fontSize: 20,
     marginBottom: 20,
+  },
+  headerDetail: {padding: 10},
+  backgroundDetail: {
+    backgroundColor: '#f5f2f2',
+    padding: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   nullWarn: {color: '#000000', alignSelf: 'center'},
   marginCard: {marginVertical: 10},
