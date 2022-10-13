@@ -87,6 +87,17 @@ export const DocumentCard = ({title, onPress, haveContent}) => {
   }
 };
 
+export const SimpleButton = ({icon, onPress, value}) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.simplebutton}>
+      <Icon name={icon} size={25} color={'#fff'} />
+      <View>
+        <Text style={{color: '#fff'}}>{value}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 const styles = new StyleSheet.create({
   textSection: {
     color: Colors.whitetheme.gray,
@@ -158,5 +169,14 @@ const styles = new StyleSheet.create({
     color: Colors.whitetheme.primary,
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  simplebutton: {
+    backgroundColor: Colors.whitetheme.primary,
+    width: 200,
+    borderRadius: 20,
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
   },
 });

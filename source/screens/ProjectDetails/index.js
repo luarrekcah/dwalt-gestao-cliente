@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../../global/colorScheme';
-import {DocumentCard, TextSection} from '../../global/Components';
+import {DocumentCard, SimpleButton, TextSection} from '../../global/Components';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
 import database from '@react-native-firebase/database';
@@ -187,6 +187,11 @@ const ProjectDetails = ({navigation, route}) => {
             <Text>Clique para abrir o Maps</Text>
           </ImageBackground>
         </TouchableOpacity>
+
+        <TextSection value={'Suporte & Reclamação'} />
+
+        <SimpleButton icon={'warning'} value="Solicitar Vistoria" />
+        <SimpleButton icon={'warning'} value="Fazer Reclamação" />
       </View>
     </ScrollView>
   );
