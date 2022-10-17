@@ -87,7 +87,7 @@ export const DocumentCard = ({title, onPress, haveContent}) => {
   }
 };
 
-export const SimpleButton = ({icon, onPress, value, type}) => {
+export const SimpleButton = ({icon, onPress, value, type, style}) => {
   if (type === 'primary') {
     return (
       <TouchableOpacity
@@ -96,7 +96,7 @@ export const SimpleButton = ({icon, onPress, value, type}) => {
           styles.simplebutton,
           {backgroundColor: Colors.whitetheme.primary},
         ]}>
-        <Icon name={icon} size={25} color={'#fff'} />
+        {icon ? <Icon name={icon} size={25} color={'#fff'} /> : ''}
         <View>
           <Text style={{color: '#fff'}}>{value}</Text>
         </View>
@@ -110,7 +110,7 @@ export const SimpleButton = ({icon, onPress, value, type}) => {
           styles.simplebutton,
           {backgroundColor: Colors.whitetheme.warning},
         ]}>
-        <Icon name={icon} size={25} color={'#fff'} />
+        {icon ? <Icon name={icon} size={25} color={'#fff'} /> : ''}
         <View>
           <Text style={{color: '#fff'}}>{value}</Text>
         </View>
@@ -124,7 +124,7 @@ export const SimpleButton = ({icon, onPress, value, type}) => {
           styles.simplebutton,
           {backgroundColor: Colors.whitetheme.danger},
         ]}>
-        <Icon name={icon} size={25} color={'#fff'} />
+        {icon ? <Icon name={icon} size={25} color={'#fff'} /> : ''}
         <View>
           <Text style={{color: '#fff'}}>{value}</Text>
         </View>

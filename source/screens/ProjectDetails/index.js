@@ -7,6 +7,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   Linking,
+  Modal,
+  TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../../global/colorScheme';
@@ -21,6 +23,10 @@ const ProjectDetails = ({navigation, route}) => {
   const [allMedia, setAllmedia] = React.useState(project.photos || []);
   const [visibleImageViewer, setIsVisibleImageViewer] = React.useState(false);
   const [viewerURI, setViewerURI] = React.useState([]);
+
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  const [value, setValue] = React.useState('');
 
   const pickImages = () => {
     ImagePicker.openPicker({
@@ -187,20 +193,48 @@ const ProjectDetails = ({navigation, route}) => {
             <Text>Clique para abrir o Maps</Text>
           </ImageBackground>
         </TouchableOpacity>
-
         <TextSection value={'Suporte & Reclamação'} />
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
           <SimpleButton
             icon={'warning'}
             type="primary"
             value="Solicitar Vistoria"
+            onPress={() => {
+              setModalVisible(true);
+            }}
           />
           <SimpleButton
             icon={'warning'}
-            type="warning"
+            type="danger"
             value="Fazer Reclamação"
+            onPress={() => {
+              setModalVisible(true);
+            }}
           />
         </View>
+      </View>
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text>Olá, qual a razão da VISTORIA/RECLAMAÇÃO</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Estou com um problema em..."
+                placeholderTextColor={Colors.whitetheme.primary}
+                autoCapitalize="none"
+                onChangeText={text => setValue(text)}
+              />
+              <SimpleButton value="Enviar" type={'primary'} />
+            </View>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -270,6 +304,35 @@ const styles = new StyleSheet.create({
     height: 140,
   },
   mapBackground: {height: 250, alignItems: 'center', paddingTop: 40},
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  textInput: {
+    margin: 30,
+    borderColor: Colors.whitetheme.primary,
+    borderWidth: 1,
+    borderRadius: 30,
+    paddingHorizontal: 50,
+    width: '100%',
+  },
 });
 
 export default ProjectDetails;
