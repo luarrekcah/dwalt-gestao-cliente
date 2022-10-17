@@ -87,15 +87,50 @@ export const DocumentCard = ({title, onPress, haveContent}) => {
   }
 };
 
-export const SimpleButton = ({icon, onPress, value}) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={styles.simplebutton}>
-      <Icon name={icon} size={25} color={'#fff'} />
-      <View>
-        <Text style={{color: '#fff'}}>{value}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+export const SimpleButton = ({icon, onPress, value, type}) => {
+  if (type === 'primary') {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          styles.simplebutton,
+          {backgroundColor: Colors.whitetheme.primary},
+        ]}>
+        <Icon name={icon} size={25} color={'#fff'} />
+        <View>
+          <Text style={{color: '#fff'}}>{value}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  } else if (type === 'warning') {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          styles.simplebutton,
+          {backgroundColor: Colors.whitetheme.warning},
+        ]}>
+        <Icon name={icon} size={25} color={'#fff'} />
+        <View>
+          <Text style={{color: '#fff'}}>{value}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  } else {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          styles.simplebutton,
+          {backgroundColor: Colors.whitetheme.danger},
+        ]}>
+        <Icon name={icon} size={25} color={'#fff'} />
+        <View>
+          <Text style={{color: '#fff'}}>{value}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 };
 
 const styles = new StyleSheet.create({
@@ -171,12 +206,12 @@ const styles = new StyleSheet.create({
     fontSize: 14,
   },
   simplebutton: {
-    backgroundColor: Colors.whitetheme.primary,
-    width: 200,
     borderRadius: 20,
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
+    paddingHorizontal: 20,
+    margin: 10,
   },
 });

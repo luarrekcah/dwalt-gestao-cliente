@@ -189,9 +189,18 @@ const ProjectDetails = ({navigation, route}) => {
         </TouchableOpacity>
 
         <TextSection value={'Suporte & Reclamação'} />
-
-        <SimpleButton icon={'warning'} value="Solicitar Vistoria" />
-        <SimpleButton icon={'warning'} value="Fazer Reclamação" />
+        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+          <SimpleButton
+            icon={'warning'}
+            type="primary"
+            value="Solicitar Vistoria"
+          />
+          <SimpleButton
+            icon={'warning'}
+            type="warning"
+            value="Fazer Reclamação"
+          />
+        </View>
       </View>
     </ScrollView>
   );
