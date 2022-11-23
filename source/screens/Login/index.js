@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, ToastAndroid} from 'react-native';
 import Colors from '../../global/colorScheme';
 import {
   GoogleSignin,
   statusCodes,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {saveUserAuth} from '../../services/Auth';
 
 const Login = ({navigation}) => {
   React.useEffect(() => {
@@ -28,21 +28,20 @@ const Login = ({navigation}) => {
         foto: userInfo.user.photo,
         email_link: '',
       };
-      await AsyncStorage.setItem('user', JSON.stringify(user));
+      saveUserAuth(user);
       navigation.navigate('CompanyLink');
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log(error);
-        // user cancelled the login flow
+        ToastAndroid.show('Login cancelado.', ToastAndroid.SHORT);
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log(error);
-        // operation (f.e. sign in) is in progress already
+        ToastAndroid.show('Carregando login.', ToastAndroid.SHORT);
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log(error);
-        // play services not available or outdated
+        ToastAndroid.show(
+          'Google Play Services indisponível.',
+          ToastAndroid.SHORT,
+        );
       } else {
-        // some other error happened
-        console.log(error);
+        ToastAndroid.show(`Erro ${error}`, ToastAndroid.SHORT);
       }
     }
   };
