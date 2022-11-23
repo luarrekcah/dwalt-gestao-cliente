@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import Colors from './colorScheme';
-
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Colors from '../global/colorScheme';
 
 export const TextSection = ({value}) => {
   return <Text style={styles.textSection}>{value}</Text>;
@@ -23,12 +22,13 @@ export const MiniCard = ({
   iconSize = 40,
   iconColor = '#fff',
   content = ['Informe', 'Informe'],
-  colorBackground = Colors.whitetheme.primary,
 }) => {
   return (
-    <View style={[styles.miniCard, {backgroundColor: colorBackground}]}>
+    <View style={styles.miniCard}>
       <Icon name={iconName} size={iconSize} color={iconColor} />
+      <Divisor />
       <Text style={styles.textCardTitle}>{content[0]}</Text>
+      <Divisor />
       <Text style={styles.textCardDesc}>{content[1]}</Text>
     </View>
   );
@@ -60,16 +60,61 @@ export const LoadingActivity = () => {
   );
 };
 
-export const DocumentCard = ({title, onPressView}) => {
+export const NotConnected = () => {
   return (
-    <View style={styles.documentsCard}>
-      <Icon name="file-document-outline" size={30} color="#fff" />
-      <Text style={styles.documentsTitle}>{title}</Text>
-      <TouchableOpacity style={styles.documentsButton} onPress={onPressView}>
-        <Text style={styles.documentsButtonText}>Ver</Text>
-      </TouchableOpacity>
+    <View
+      style={[
+        styles.container,
+        {alignContent: 'center', alignItems: 'center'},
+      ]}>
+      <View>
+        <Text
+          style={{
+            color: '#000000',
+            fontSize: 20,
+            fontWeight: 'bold',
+            margin: 20,
+          }}>
+          Sem conexão com internet...
+        </Text>
+        <ActivityIndicator size="large" color={Colors.whitetheme.danger} />
+      </View>
     </View>
   );
+};
+
+export const DocumentCard = ({title, onPress, haveContent}) => {
+  if (haveContent) {
+    return (
+      <View style={styles.documentsCard}>
+        <Icon name="check" size={30} color="#fff" />
+        <Text style={styles.documentsTitle}>{title}</Text>
+        <TouchableOpacity style={styles.documentsButton} onPress={onPress}>
+          <Text style={styles.documentsButtonText}>Ver</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return (
+      <View
+        style={[
+          styles.documentsCard,
+          {backgroundColor: Colors.whitetheme.warning},
+        ]}>
+        <Icon name="warning" size={30} color="#fff" />
+        <Text style={styles.documentsTitle}>{title}</Text>
+        <TouchableOpacity style={styles.documentsButton} onPress={onPress}>
+          <Text
+            style={[
+              styles.documentsButtonText,
+              {color: Colors.whitetheme.warning},
+            ]}>
+            Documentação{'\n'}em falta
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 };
 
 export const SimpleButton = ({icon, onPress, value, type}) => {
@@ -164,7 +209,7 @@ const styles = new StyleSheet.create({
   },
   textCardDesc: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: 15,
     textTransform: 'uppercase',
   },
   /* BUTTON */
@@ -188,6 +233,7 @@ const styles = new StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: Colors.whitetheme.backgroundColor,
   },
   horizontal: {
     flexDirection: 'row',

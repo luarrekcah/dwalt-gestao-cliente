@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Linking, TouchableOpacity} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import NetInfo from '@react-native-community/netinfo';
 
 import Colors from './global/colorScheme';
+
+import {isInitialized} from './services/Welcome';
+import {isLogged} from './services/Auth';
+
+const Stack = createNativeStackNavigator();
 
 import Intro from './screens/Intro';
 import Login from './screens/Login';
@@ -12,120 +18,159 @@ import CompanyLink from './screens/CompanyLink';
 import Main from './screens/Main';
 import ProjectDetails from './screens/ProjectDetails';
 
-const Stack = createNativeStackNavigator();
+import {LoadingActivity, NotConnected} from './components/Global';
+
+const AppScreens = ({logged, initiated}) => {
+  return (
+    <Stack.Navigator
+      initialRouteName={logged ? (initiated ? 'Main' : 'Login') : 'Intro'}
+      screenOptions={{
+        headerShown: true,
+      }}>
+      <Stack.Screen
+        name="Intro"
+        component={Intro}
+        options={({navigation}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: true,
+          headerTitle: 'D | Walt Gestão',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={({navigation}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: 'Realize o login',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="CompanyLink"
+        component={CompanyLink}
+        options={({navigation}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: 'Última etapa',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="Main"
+        component={Main}
+        options={({navigation}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: 'D | Walt Gestão',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com');
+              }}>
+              <Icon name="settings" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="ProjectDetails"
+        component={ProjectDetails}
+        options={({navigation, route}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: route.params.project.apelidoProjeto,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const Routes = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [initiated, setInitiated] = useState(false);
+  const [logged, setLogged] = useState(false);
+  const [isConnected, setisConnected] = useState(false);
+
+  useEffect(() => {
+    async function initialVerifications() {
+      if (await isInitialized()) {
+        setInitiated(true);
+      }
+
+      if (await isLogged()) {
+        setLogged(true);
+      }
+
+      setIsLoading(false);
+    }
+
+    initialVerifications();
+  });
+
+  NetInfo.fetch().then(state => {
+    setisConnected(state.isConnected);
+  });
+
+  if (isLoading) {
+    return <LoadingActivity />;
+  }
+
+  if (!isConnected) {
+    return <NotConnected />;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Intro"
-        screenOptions={{
-          headerShown: true,
-        }}>
-        <Stack.Screen
-          name="Intro"
-          component={Intro}
-          options={({navigation}) => ({
-            headerStyle: {backgroundColor: Colors.whitetheme.primary},
-            headerTransparent: true,
-            headerTitle: 'D | Walt Gestão',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {color: 'white'},
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL('https://www.dlwalt.com/faq');
-                }}>
-                <Icon name="help" size={30} color="#fff" />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={({navigation}) => ({
-            headerStyle: {backgroundColor: Colors.whitetheme.primary},
-            headerTransparent: false,
-            headerTitle: 'Realize o login',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {color: 'white'},
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL('https://www.dlwalt.com/faq');
-                }}>
-                <Icon name="help" size={30} color="#fff" />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="CompanyLink"
-          component={CompanyLink}
-          options={({navigation}) => ({
-            headerStyle: {backgroundColor: Colors.whitetheme.primary},
-            headerTransparent: false,
-            headerTitle: 'Última etapa',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {color: 'white'},
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL('https://www.dlwalt.com/faq');
-                }}>
-                <Icon name="help" size={30} color="#fff" />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="Main"
-          component={Main}
-          options={({navigation}) => ({
-            headerStyle: {backgroundColor: Colors.whitetheme.primary},
-            headerTransparent: false,
-            headerTitle: 'D | Walt Gestão',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {color: 'white'},
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL('https://www.dlwalt.com/faq');
-                }}>
-                <Icon name="help" size={30} color="#fff" />
-              </TouchableOpacity>
-            ),
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL('https://www.dlwalt.com');
-                }}>
-                <Icon name="settings" size={30} color="#fff" />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="ProjectDetails"
-          component={ProjectDetails}
-          options={({navigation, route}) => ({
-            headerStyle: {backgroundColor: Colors.whitetheme.primary},
-            headerTransparent: false,
-            headerTitle: route.params.project.apelidoProjeto,
-            headerTitleAlign: 'center',
-            headerTitleStyle: {color: 'white'},
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL('https://www.dlwalt.com/faq');
-                }}>
-                <Icon name="help" size={30} color="#fff" />
-              </TouchableOpacity>
-            ),
-          })}
-        />
-      </Stack.Navigator>
+      <AppScreens logged={logged} initiated={initiated} />
     </NavigationContainer>
   );
 };

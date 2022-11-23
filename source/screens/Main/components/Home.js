@@ -112,6 +112,10 @@ const Home = ({navigation}) => {
                 iconSize={40}
               />
             </ScrollView>
+            <TextSection value={'Solicitações'} />
+            <View>
+              <Text>Nenhuma solicitação ativa</Text>
+            </View>
             <TextSection value={'Projetos'} />
             {projects === null || projects.length === 0 ? (
               <View>
