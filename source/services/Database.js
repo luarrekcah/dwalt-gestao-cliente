@@ -61,21 +61,13 @@ export const getBusinessData = async () => {
 
 export const getUserData = async () => {
   const userLocal = await getUserAuth();
-  const staffs = await getAllItems({
-    path: `/gestaoempresa/business/${userLocal.businessKey}/staffs`,
+  const customers = await getAllItems({
+    path: `/gestaoempresa/business/${userLocal.businessKey}/customers`,
   });
-  const user = await staffs.find(item => {
+  const user = await customers.find(item => {
     return item.data._id === userLocal._id;
   });
   return user;
-};
-
-export const getTeamData = async () => {
-  const userData = await getUserData();
-  const staffs = await getAllItems({
-    path: `/gestaoempresa/business/${userData.data.businessKey}/teams/${userData.data.team.id}/members`,
-  });
-  return staffs;
 };
 
 export const getSurveyData = async () => {
@@ -83,15 +75,9 @@ export const getSurveyData = async () => {
   const surveys = await getAllItems({
     path: `/gestaoempresa/business/${userLocal.businessKey}/surveys`,
   });
-  return surveys;
-};
-
-export const getStaffsData = async () => {
-  const userLocal = await getUserAuth();
-  const staffs = await getAllItems({
-    path: `/gestaoempresa/business/${userLocal.businessKey}/staffs`,
-  });
-  return staffs;
+  const onlyuser = surveys.filter(i => i.data.owner === userLocal.email);
+  console.log(onlyuser);
+  return onlyuser;
 };
 
 export const getProjectsData = async () => {
