@@ -55,7 +55,7 @@ const Home = ({navigation}) => {
   const getKwp = () => {
     let kwpTotal = 0;
     projects.forEach(item => {
-      kwpTotal += Number(item.kwp);
+      kwpTotal += Number(item.data.kwp);
     });
     return kwpTotal;
   };
@@ -83,12 +83,12 @@ const Home = ({navigation}) => {
                 iconSize={40}
               />
               <MiniCard
-                content={['100', 'kWp']}
+                content={[getKwp(), 'kWp']}
                 iconName="flash"
                 iconSize={40}
               />
               <MiniCard
-                content={['4890', 'kWh/mês']}
+                content={[getKwp() * 30 * 4.5, 'kWh/mês']}
                 iconName="flash"
                 iconSize={40}
               />
