@@ -2,33 +2,16 @@ import React from 'react';
 import {Text, View, Image, StyleSheet, ScrollView} from 'react-native';
 import Colors from '../../global/colorScheme';
 import {LoadingActivity, TextSection} from '../../global/Components';
-import database from '@react-native-firebase/database';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getBusinessData} from '../../services/Database';
 
 const Business = ({navigation}) => {
   const [business, setBusiness] = React.useState();
-  const [user, setUser] = React.useState();
   const [loading, setLoading] = React.useState(true);
 
   const loadData = async () => {
-    await AsyncStorage.getItem('user').then(data => {
-      const userdata = JSON.parse(data);
-      setUser(userdata);
-      database()
-        .ref('/gestaoempresa/empresa')
-        .once('value')
-        .then(snapshot => {
-          let allBusiness = [];
-          if (snapshot.val() !== null) {
-            allBusiness = snapshot.val();
-          }
-          const myBusiness = allBusiness.filter(item => {
-            return item._id === userdata.email_link;
-          });
-          setBusiness(myBusiness[0]);
-          setLoading(false);
-        });
-    });
+    setLoading(true);
+    setBusiness(await getBusinessData());
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -36,8 +19,7 @@ const Business = ({navigation}) => {
       loadData();
     });
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigation, user]);
+  }, [navigation]);
 
   if (loading) {
     return <LoadingActivity />;
@@ -48,14 +30,33 @@ const Business = ({navigation}) => {
           <Image
             style={styles.bussinessLogo}
             source={{
-              uri: business.profile.logo,
+              uri: business.data.info.profile.logo,
             }}
           />
           <Text style={styles.bussinessName}>
-            {business.documents.nome_fantasia}
+            {business.data.info.documents.nome_fantasia}
           </Text>
           <TextSection value="Sobre a empresa" />
-          <Text style={styles.bussinessDesc}>{business.profile.about}</Text>
+          <Text style={styles.bussinessDesc}>
+            {business.data.info.profile.about}
+          </Text>
+          <TextSection value="Documentos - CNPJ" />
+          <Text style={styles.bussinessDesc}>
+            {business.data.info.documents.nome_fantasia} -{' '}
+            {business.data.info.documents.cnpj}
+          </Text>
+          <TextSection value="Localização" />
+          <Text style={styles.bussinessDesc}>
+            {business.data.info.profile.mainLocation}
+          </Text>
+          <TextSection value="Proprietário(a)" />
+          <Text style={styles.bussinessDesc}>
+            {business.data.info.profile.ownerName}
+          </Text>
+          <TextSection value="Data de registro na plataforma" />
+          <Text style={styles.bussinessDesc}>
+            {business.data.info.createdAt}
+          </Text>
         </ScrollView>
       </View>
     );
@@ -71,6 +72,7 @@ const styles = new StyleSheet.create({
     height: 100,
     alignSelf: 'center',
     margin: 30,
+    borderRadius: 20,
   },
   bussinessName: {
     fontSize: 20,

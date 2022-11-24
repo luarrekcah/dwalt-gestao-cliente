@@ -9,286 +9,313 @@ import {
   Linking,
   Modal,
   TextInput,
-  Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
-import {DocumentCard, SimpleButton, TextSection} from '../../global/Components';
+import {
+  DocumentCard,
+  LoadingActivity,
+  SimpleButton,
+  TextSection,
+} from '../../global/Components';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
-import database from '@react-native-firebase/database';
+import {
+  createItem,
+  getAllItems,
+  getItems,
+  updateItem,
+} from '../../services/Database';
+import {getUserAuth} from '../../services/Auth';
 //import MapView from 'react-native-maps'; desinstalar
-import moment from 'moment';
 
 const ProjectDetails = ({navigation, route}) => {
   const {project} = route.params;
-  const [allMedia, setAllmedia] = React.useState(project.photos || []);
+  const [projectData, setProjectData] = React.useState(project);
+  const [allMedia, setAllmedia] = React.useState([]);
+  const [allDocuments, setAllDocuments] = React.useState([]);
   const [visibleImageViewer, setIsVisibleImageViewer] = React.useState(false);
   const [viewerURI, setViewerURI] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [value, setValue] = React.useState('');
-  const [typeRequest, setTypeRequest] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [modalData, setModalData] = React.useState({});
+  const [value, setValue] = React.useState();
+  const [loadingModal, setLoadingModal] = React.useState(false);
+
+  const loadData = async () => {
+    setLoading(true);
+    setAllmedia(
+      await getAllItems({
+        path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/photos`,
+      }),
+    );
+
+    setAllDocuments(
+      await getAllItems({
+        path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/documents`,
+      }),
+    );
+
+    setProjectData(
+      await getItems({
+        path: `gestaoempresa/business/${project.data.business}/projects/${project.key}`,
+      }),
+    );
+
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const pickImages = () => {
     ImagePicker.openPicker({
       includeBase64: true,
       multiple: true,
     }).then(images => {
-      database()
-        .ref('/gestaoempresa/projetos')
-        .once('value')
-        .then(snapshot => {
-          let allProjects = [];
-          if (snapshot.val() !== null) {
-            allProjects = snapshot.val();
-          }
-          allProjects.map(projeto => {
-            if (projeto._id === project._id) {
-              images.forEach((item, i) => {
-                if (projeto.photos === null || projeto.photos === undefined) {
-                  projeto.photos = [];
-                }
-                projeto.photos.push('data:image/png;base64,' + item.data);
-              });
-              setAllmedia(projeto.photos);
-              return projeto;
-            } else {
-              return projeto;
-            }
-          });
-          database().ref('/gestaoempresa/projetos').set(allProjects);
+      images.forEach(async i => {
+        createItem({
+          path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/photos`,
+          params: {base64: 'data:image/png;base64,' + i.data},
         });
+        loadData();
+      });
     });
   };
+  const dictionary = {
+    cod: 'Código do produto',
+    nomeComp: 'Nome completo',
+    cpf: 'CPF',
+    dataNasc: 'Data de nascimento',
+    email: 'E-mail',
+    celular: 'Celular',
+    nomeMae: 'Nome da mãe',
+    rg: 'RG',
+    sexo: 'Sexo',
+    estadoCivil: 'Estado civil',
+    patrimonio: 'Patrimônio',
+    ocupacao: 'Ocupação',
+    profissao: 'Profissão',
+    anos: 'Anos trabalhando',
+    meses: 'Meses atuando',
+    renda: 'Renda Mensal',
+    endCompleto: 'Endereço Completo',
+  };
 
-  const RenderCollectedItems = () => {
+  const dictToArray = Object.keys(dictionary).map(key => [
+    key,
+    dictionary[key],
+  ]);
+
+  if (loading) {
+    return <LoadingActivity />;
+  } else {
     return (
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <Text style={styles.collectedCard}>
-          Nome Completo
-          <Icon
-            name={project.nomeComp !== '' ? 'check' : 'x'}
-            size={15}
-            color={'#fff'}
-          />
-        </Text>
-        <Text style={styles.collectedCard}>
-          CPF
-          <Icon
-            name={project.cpf !== '' ? 'check' : 'x'}
-            size={15}
-            color={'#fff'}
-          />
-        </Text>
-        <Text style={styles.collectedCard}>
-          Nome da Mãe
-          <Icon
-            name={project.nomeMae !== '' ? 'check' : 'x'}
-            size={15}
-            color={'#fff'}
-          />
-        </Text>
-        <Text style={styles.collectedCard}>
-          Endereço Completo
-          <Icon
-            name={project.endComp !== '' ? 'check' : 'x'}
-            size={15}
-            color={'#fff'}
-          />
-        </Text>
-        <Text style={styles.collectedCard}>
-          Data de Nascimento
-          <Icon
-            name={project.dataNasc !== '' ? 'check' : 'x'}
-            size={15}
-            color={'#fff'}
-          />
-        </Text>
-        <Text style={styles.collectedCard}>
-          E-mail
-          <Icon
-            name={project.email !== '' ? 'check' : 'x'}
-            size={15}
-            color={'#fff'}
-          />
-        </Text>
-        <Text style={styles.collectedCard}>
-          Entre outros dados básicos para homologação
-        </Text>
-      </ScrollView>
-    );
-  };
-
-  const sendRequest = () => {
-    if (value === '') {
-      return Alert.alert(
-        'Erro',
-        'Sua solicitação precisa ter uma razão, preencha a caixa de texto',
-        [{text: 'OK'}],
-      );
-    }
-    setLoading(true);
-    database()
-      .ref('/gestaoempresa/' + typeRequest)
-      .once('value')
-      .then(snapshot => {
-        let all = [];
-        if (snapshot.val() !== null) {
-          all = snapshot.val();
-        }
-        all.push({
-          ids: {
-            customerId: project.emailApp,
-            businessId: project.business,
-            projectId: project._id,
-          },
-          text: value,
-          createdAt: moment().format(),
-          finished: false,
-          businessAnswer: '',
-          status: 'Aguardando resposta da empresa...',
-        });
-        database()
-          .ref('/gestaoempresa/' + typeRequest)
-          .set(all);
-        setLoading(false);
-        setModalVisible(false);
-        setValue('');
-      });
-  };
-
-  return (
-    <ScrollView style={styles.white}>
-      <ImageView
-        images={[
-          {
-            uri: viewerURI,
-          },
-        ]}
-        imageIndex={0}
-        visible={visibleImageViewer}
-        onRequestClose={() => setIsVisibleImageViewer(false)}
-      />
-      <ImageBackground
-        style={styles.backgroundImage}
-        source={require('../../../assets/home/bannerbackground.jpg')}>
-        <View style={styles.projectCard}>
-          <Text style={styles.projectTitle}>{project.apelidoProjeto}</Text>
-          <Text style={styles.projectCategory}>{project.category}</Text>
-          <View style={styles.bottomProject}>
-            <Text style={styles.bottomKwp}>
-              <Icon name="flash-on" size={20} color="#fff" />
-              {project.kwp}
-              kWp
+      <ScrollView style={styles.white}>
+        <ImageView
+          images={[
+            {
+              uri: viewerURI,
+            },
+          ]}
+          imageIndex={0}
+          visible={visibleImageViewer}
+          onRequestClose={() => setIsVisibleImageViewer(false)}
+        />
+        <ImageBackground
+          style={styles.backgroundImage}
+          source={require('../../../assets/home/bannerbackground.jpg')}>
+          <View style={styles.projectCard}>
+            <Text style={styles.projectTitle}>
+              {project.data.apelidoProjeto}
             </Text>
-            <Text style={styles.bottomStatus}>Status: {project.Status}</Text>
-          </View>
-        </View>
-      </ImageBackground>
-      <View style={styles.container}>
-        <TextSection value={'Fotos'} />
-        <ScrollView horizontal>
-          {allMedia.map((item, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setViewerURI(item);
-                  setIsVisibleImageViewer(true);
-                }}>
-                <ImageBackground
-                  style={styles.backgroundImagePhoto}
-                  source={{uri: item}}
-                />
-              </TouchableOpacity>
-            );
-          })}
-          <TouchableOpacity style={styles.iconAdd} onPress={pickImages}>
-            <Icon name="add" size={40} color="#fff" />
-          </TouchableOpacity>
-        </ScrollView>
-        <TextSection value={'Dados Salvos'} />
-        <RenderCollectedItems />
-        <TextSection value={'Documentos'} />
-        <ScrollView horizontal>
-          <DocumentCard title={'A.R.T'} haveContent={true} />
-          <DocumentCard title={'Procuração'} haveContent={false} />
-          <DocumentCard title={'Solicitação de Acesso'} haveContent={false} />
-          <DocumentCard title={'Memorial Técnico'} haveContent={false} />
-          <DocumentCard title={'Declaração'} haveContent={false} />
-          <DocumentCard title={'Projeto'} haveContent={false} />
-          <DocumentCard title={'Carta de Aprovação'} haveContent={false} />
-        </ScrollView>
-        <TextSection value={'Localização'} />
-        <TouchableOpacity
-          onPress={() => {
-            Linking.openURL(
-              'https://www.google.com.br/maps/search/' + project.coords,
-            );
-          }}>
-          <ImageBackground
-            style={styles.mapBackground}
-            source={require('../../../assets/projectdetails/banner.jpg')}>
-            <Text>Clique para abrir o Maps</Text>
-          </ImageBackground>
-        </TouchableOpacity>
-        <TextSection value={'Suporte & Reclamação'} />
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-          <SimpleButton
-            icon={'warning'}
-            type="primary"
-            value="Solicitar Vistoria"
-            onPress={() => {
-              setModalVisible(true);
-              setTypeRequest('survey');
-            }}
-          />
-          <SimpleButton
-            icon={'warning'}
-            type="danger"
-            value="Fazer Reclamação"
-            onPress={() => {
-              setModalVisible(true);
-              setTypeRequest('complaint');
-            }}
-          />
-        </View>
-      </View>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>
-                Olá, qual a razão da{' '}
-                {typeRequest === 'complaint' ? 'Reclamação' : 'Vistoria'}
+            <Text style={styles.projectCategory}>{project.data.category}</Text>
+            <View style={styles.bottomProject}>
+              <Text style={styles.bottomKwp}>
+                <Icon name="flash" size={20} color="#fff" />
+                {project.data.kwp}
+                kWp
               </Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Estou com um problema em..."
-                placeholderTextColor={Colors.whitetheme.primary}
-                autoCapitalize="none"
-                multiline={true}
-                onChangeText={text => setValue(text)}
-                numberOfLines={10}
-              />
-              <SimpleButton
-                value="Enviar"
-                type={'primary'}
-                onPress={() => sendRequest()}
-              />
+              <Text style={styles.bottomStatus}>
+                Status: {project.data.Status}
+              </Text>
             </View>
           </View>
-        </Modal>
-      </View>
-    </ScrollView>
-  );
+        </ImageBackground>
+        <View style={styles.container}>
+          <TextSection value={'Fotos'} />
+          <ScrollView horizontal>
+            {allMedia.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setViewerURI(item.data.base64);
+                    setIsVisibleImageViewer(true);
+                  }}>
+                  <ImageBackground
+                    style={styles.backgroundImagePhoto}
+                    source={{uri: item.data.base64}}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+            <TouchableOpacity style={styles.iconAdd} onPress={pickImages}>
+              <Icon name="plus" size={40} color="#fff" />
+            </TouchableOpacity>
+          </ScrollView>
+          <TextSection value={'Dados Salvos'} />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {dictToArray.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setModalVisible(true);
+                    setModalData({
+                      title: dictionary[`${item[0]}`],
+                      key: item[0],
+                    });
+                  }}>
+                  <Text
+                    style={[
+                      styles.collectedCard,
+                      projectData[`${item[0]}`] === ''
+                        ? {backgroundColor: Colors.whitetheme.warning}
+                        : '',
+                    ]}>
+                    {dictionary[`${item[0]}`]}
+                    <Icon
+                      name={
+                        projectData[`${item[0]}`] !== '' ? 'check' : 'alert'
+                      }
+                      size={15}
+                      color={'#fff'}
+                    />
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+          <TextSection value={'Documentos'} />
+          <ScrollView horizontal>
+            {allDocuments.length !== 0 ? (
+              allDocuments.map((item, index) => {
+                return (
+                  <DocumentCard
+                    key={index}
+                    title={item.data.documentName}
+                    haveContent={true}
+                    onPressView={() =>
+                      navigation.navigate('PdfViewer', {
+                        source: {
+                          uri: item.data.documentBase64,
+                        },
+                      })
+                    }
+                  />
+                );
+              })
+            ) : (
+              <Text style={{color: '#000000'}}>
+                Sem documentos, precisa ser adicionado pela empresa
+              </Text>
+            )}
+          </ScrollView>
+          <TextSection value={'Localização'} />
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(
+                'https://www.google.com.br/maps/search/' + project.data.coords,
+              );
+            }}>
+            <ImageBackground
+              style={styles.mapBackground}
+              source={require('../../../assets/projectdetails/banner.jpg')}>
+              <Text>Clique para abrir o Maps</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                {loadingModal ? (
+                  <Text
+                    style={{
+                      color: '#000000',
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}>
+                    Carregando...
+                  </Text>
+                ) : (
+                  <View>
+                    <Text
+                      style={{
+                        color: '#000000',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                      }}>
+                      Editar informações de {modalData.title}
+                    </Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Insira a nova informação aqui"
+                      placeholderTextColor="#000000"
+                      autoCapitalize="none"
+                      onChangeText={text => setValue(text)}
+                    />
+                    <SimpleButton
+                      value="Enviar"
+                      type={'success'}
+                      onPress={async () => {
+                        setLoadingModal(true);
+                        const userLocal = await getUserAuth();
+
+                        try {
+                          const params = JSON.parse(
+                            '{"' + modalData.key + '":"' + value + '"}',
+                          );
+
+                          updateItem({
+                            path: `gestaoempresa/business/${userLocal.businessKey}/projects/${project.key}`,
+                            params,
+                          });
+                        } catch (e) {
+                          console.log(e);
+                          setLoadingModal(false);
+                          setModalVisible(false);
+                        }
+                        setModalVisible(false);
+                        setLoadingModal(false);
+                        loadData();
+                      }}
+                    />
+
+                    <SimpleButton
+                      value="Cancelar"
+                      type={'warning'}
+                      onPress={() => setModalVisible(false)}
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </ScrollView>
+    );
+  }
 };
 
 const styles = new StyleSheet.create({
@@ -382,6 +409,7 @@ const styles = new StyleSheet.create({
     borderWidth: 1,
     borderRadius: 30,
     padding: 10,
+    color: '#000000',
   },
   modalTitle: {
     fontWeight: 'bold',

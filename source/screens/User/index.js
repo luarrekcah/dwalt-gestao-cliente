@@ -4,9 +4,18 @@ import {Image, Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../global/colorScheme';
 import {Button, LoadingActivity, TextSection} from '../../global/Components';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {getUserData} from '../../services/Database';
+import {onLogoutPress} from '../../services/Auth';
 
 const Business = ({navigation}) => {
   const [user, setUser] = React.useState();
+  const [loading, setLoading] = React.useState(true);
+
+  const loadData = async () => {
+    setLoading(true);
+    setUser(await getUserData());
+    setLoading(false);
+  };
 
   React.useEffect(() => {
     GoogleSignin.configure({
@@ -17,32 +26,9 @@ const Business = ({navigation}) => {
       loadData();
     });
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
-  const loadData = () => {
-    AsyncStorage.getItem('user').then(data => {
-      const userdata = JSON.parse(data);
-      console.log(userdata);
-      setUser(userdata);
-    });
-  };
-
-  const signOut = async () => {
-    try {
-      await GoogleSignin.signInSilently();
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-      setUser(null);
-      await AsyncStorage.setItem('user', JSON.stringify(user));
-      await AsyncStorage.setItem('logged', JSON.stringify({logged: false}));
-      navigation.navigate('Login');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  if (user === undefined || user === null) {
+  if (loading) {
     return <LoadingActivity />;
   } else {
     return (
@@ -51,34 +37,40 @@ const Business = ({navigation}) => {
           <Image
             style={styles.bussinessLogo}
             source={{
-              uri: user.foto,
+              uri: user.data.foto,
             }}
           />
           <Text style={styles.bussinessName}>
-            {user.nome + ' ' + user.sobrenome}
+            {user.data.nome + ' ' + user.data.sobrenome}
           </Text>
           <View style={styles.emailBackground}>
-            <Text style={styles.email}>{user.email}</Text>
+            <Text style={styles.email}>{user.data.email}</Text>
           </View>
           <TextSection value="Conta" />
-          <Button icon="logout" value="Sair da Conta" onPress={signOut} />
+          <Button
+            icon="logout"
+            value="Sair da Conta"
+            onPress={async () => {
+              await onLogoutPress({navigation});
+            }}
+          />
           <TextSection value="Outros" />
           <Button
-            icon="info"
+            icon="information"
             value="Termos de Uso"
             onPress={() => {
               Linking.openURL('https://www.dlwalt.com/termos');
             }}
           />
           <Button
-            icon="info"
+            icon="information"
             value="Política de Privacidade"
             onPress={() => {
               Linking.openURL('https://www.dlwalt.com/politica');
             }}
           />
           <Button
-            icon="warning"
+            icon="bug"
             value="Relatar Problema"
             onPress={() => {
               Linking.openURL('https://wa.me/+556892402096');
