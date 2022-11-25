@@ -171,11 +171,16 @@ const Home = ({navigation}) => {
             )}
             <TextSection value={'Projetos'} />
             {projects.length === 0 ? (
-              <View style={styles.emptyCard}>
-                <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>
-                  Nenhum projeto registrado
-                </Text>
-              </View>
+              <ImageBackground
+                imageStyle={styles.imageCard}
+                source={require('../../../../assets/home/no-content.jpg')}>
+                <View style={styles.emptyCardNB}>
+                  <Text
+                    style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>
+                    Nenhum projeto registrado no seu e-mail.
+                  </Text>
+                </View>
+              </ImageBackground>
             ) : (
               projects.map((item, index) => {
                 return (
