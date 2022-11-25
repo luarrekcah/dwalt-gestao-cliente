@@ -102,14 +102,6 @@ const AppScreens = ({logged, initiated}) => {
               <Icon name="help" size={30} color="#fff" />
             </TouchableOpacity>
           ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL('https://www.dlwalt.com');
-              }}>
-              <Icon name="settings" size={30} color="#fff" />
-            </TouchableOpacity>
-          ),
         })}
       />
       <Stack.Screen
