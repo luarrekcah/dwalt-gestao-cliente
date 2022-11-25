@@ -10,6 +10,7 @@ import {
   Modal,
   TextInput,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
@@ -24,10 +25,12 @@ import ImageView from 'react-native-image-viewing';
 import {
   createItem,
   getAllItems,
+  getDate,
   getItems,
   updateItem,
 } from '../../services/Database';
 import {getUserAuth} from '../../services/Auth';
+import moment from 'moment/moment';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -39,6 +42,7 @@ const ProjectDetails = ({navigation, route}) => {
   const [viewerURI, setViewerURI] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [requestLoading, setRequestLoading] = React.useState(false);
   const [modalData, setModalData] = React.useState({});
   const [value, setValue] = React.useState();
   const [title, setTitle] = React.useState('');
@@ -71,21 +75,22 @@ const ProjectDetails = ({navigation, route}) => {
   };
 
   const sendRequest = () => {
-    if (value === '') {
+    if (title === '' || description === '') {
       return Alert.alert(
         'Erro',
         'Sua solicitação precisa ter uma razão, preencha a caixa de texto',
         [{text: 'OK'}],
       );
     }
-    setLoading(true);
-    if (typeRequest === '') {
+    console.log('send request');
+    setRequestLoading(true);
+    if (typeRequest !== 'complaint') {
       createItem({
         path: `gestaoempresa/business/${project.data.business}/surveys`,
         params: {
           accepted: false,
           finished: false,
-          createdAt: 'aa',
+          createdAt: getDate(moment),
           owner: project.data.emailApp,
           status: 'Aguardando empresa aceitar o chamado.',
           projectId: project.key,
@@ -93,6 +98,21 @@ const ProjectDetails = ({navigation, route}) => {
           text: description,
         },
       });
+      setModalRequestVisible(false);
+      ToastAndroid.show('Sua solicitação foi enviada.', ToastAndroid.SHORT);
+    } else {
+      createItem({
+        path: `gestaoempresa/business/${project.data.business}/complaints`,
+        params: {
+          createdAt: getDate(moment),
+          owner: project.data.emailApp,
+          projectId: project.key,
+          title: title,
+          text: description,
+        },
+      });
+      setModalRequestVisible(false);
+      ToastAndroid.show('Sua reclamação foi enviada.', ToastAndroid.SHORT);
     }
   };
 
@@ -284,7 +304,7 @@ const ProjectDetails = ({navigation, route}) => {
             type={'danger'}
             onPress={() => {
               setModalRequestVisible(true);
-              setTypeRequest('survey');
+              setTypeRequest('complaint');
             }}
           />
         </View>
@@ -374,7 +394,7 @@ const ProjectDetails = ({navigation, route}) => {
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                {loadingModal ? (
+                {requestLoading ? (
                   <Text
                     style={{
                       color: '#000000',
@@ -392,7 +412,7 @@ const ProjectDetails = ({navigation, route}) => {
                         fontWeight: 'bold',
                       }}>
                       Olá, qual a razão da{' '}
-                      {typeRequest === 'complaint' ? 'Reclamação' : 'Vistoria'}
+                      {typeRequest === 'complaint' ? 'reclamação' : 'vistoria'}
                     </Text>
                     <TextInput
                       style={styles.textInput}

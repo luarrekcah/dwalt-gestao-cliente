@@ -1,6 +1,10 @@
 import database from '@react-native-firebase/database';
 import {getUserAuth} from './Auth';
 
+export const getDate = moment => {
+  return moment().format();
+};
+
 export const createItem = ({path, params}) => {
   if (!path || !params) {
     return {error: 'Sem path'};
