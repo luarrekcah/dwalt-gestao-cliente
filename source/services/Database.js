@@ -84,5 +84,8 @@ export const getProjectsData = async () => {
   const projects = await getAllItems({
     path: `/gestaoempresa/business/${userLocal.businessKey}/projects`,
   });
-  return projects;
+  const userProjects = projects.filter(
+    i => i.data.emailApp === userLocal.email,
+  );
+  return userProjects;
 };

@@ -110,7 +110,7 @@ const AppScreens = ({logged, initiated}) => {
         options={({navigation, route}) => ({
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: false,
-          headerTitle: route.params.project.apelidoProjeto,
+          headerTitle: route.params.project.data.apelidoProjeto,
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (

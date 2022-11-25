@@ -9,6 +9,7 @@ import {
   Linking,
   Modal,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
@@ -40,7 +41,11 @@ const ProjectDetails = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalData, setModalData] = React.useState({});
   const [value, setValue] = React.useState();
+  const [title, setTitle] = React.useState('');
+  const [description, setDescription] = React.useState('');
   const [loadingModal, setLoadingModal] = React.useState(false);
+  const [typeRequest, setTypeRequest] = React.useState('');
+  const [modalRequestVisible, setModalRequestVisible] = React.useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -63,6 +68,32 @@ const ProjectDetails = ({navigation, route}) => {
     );
 
     setLoading(false);
+  };
+
+  const sendRequest = () => {
+    if (value === '') {
+      return Alert.alert(
+        'Erro',
+        'Sua solicitação precisa ter uma razão, preencha a caixa de texto',
+        [{text: 'OK'}],
+      );
+    }
+    setLoading(true);
+    if (typeRequest === '') {
+      createItem({
+        path: `gestaoempresa/business/${project.data.business}/surveys`,
+        params: {
+          accepted: false,
+          finished: false,
+          createdAt: 'aa',
+          owner: project.data.emailApp,
+          status: 'Aguardando empresa aceitar o chamado.',
+          projectId: project.key,
+          title: title,
+          text: description,
+        },
+      });
+    }
   };
 
   React.useEffect(() => {
@@ -237,6 +268,25 @@ const ProjectDetails = ({navigation, route}) => {
               <Text>Clique para abrir o Maps</Text>
             </ImageBackground>
           </TouchableOpacity>
+          <TextSection value={'Suporte & Reclamação'} />
+          <SimpleButton
+            icon={'alert'}
+            value="Solicitar Vistoria"
+            type={'warning'}
+            onPress={() => {
+              setModalRequestVisible(true);
+              setTypeRequest('survey');
+            }}
+          />
+          <SimpleButton
+            icon={'alert'}
+            value="Fazer Reclamação"
+            type={'danger'}
+            onPress={() => {
+              setModalRequestVisible(true);
+              setTypeRequest('survey');
+            }}
+          />
         </View>
 
         <View style={styles.centeredView}>
@@ -306,6 +356,70 @@ const ProjectDetails = ({navigation, route}) => {
                       value="Cancelar"
                       type={'warning'}
                       onPress={() => setModalVisible(false)}
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
+          </Modal>
+        </View>
+
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalRequestVisible}
+            onRequestClose={() => {
+              setModalRequestVisible(!modalRequestVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                {loadingModal ? (
+                  <Text
+                    style={{
+                      color: '#000000',
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}>
+                    Carregando...
+                  </Text>
+                ) : (
+                  <View>
+                    <Text
+                      style={{
+                        color: '#000000',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                      }}>
+                      Olá, qual a razão da{' '}
+                      {typeRequest === 'complaint' ? 'Reclamação' : 'Vistoria'}
+                    </Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Título"
+                      placeholderTextColor={Colors.whitetheme.primary}
+                      autoCapitalize="none"
+                      onChangeText={text => setTitle(text)}
+                    />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Estou com um problema em..."
+                      placeholderTextColor={Colors.whitetheme.primary}
+                      autoCapitalize="none"
+                      multiline={true}
+                      onChangeText={text => setDescription(text)}
+                      numberOfLines={10}
+                    />
+                    <SimpleButton
+                      value="Enviar"
+                      type={'primary'}
+                      onPress={() => sendRequest()}
+                    />
+
+                    <SimpleButton
+                      value="Cancelar"
+                      type={'warning'}
+                      onPress={() => setModalRequestVisible(false)}
                     />
                   </View>
                 )}
