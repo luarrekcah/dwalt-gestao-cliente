@@ -76,7 +76,6 @@ export const getSurveyData = async () => {
     path: `/gestaoempresa/business/${userLocal.businessKey}/surveys`,
   });
   const onlyuser = surveys.filter(i => i.data.owner === userLocal.email);
-  console.log(onlyuser);
   return onlyuser;
 };
 

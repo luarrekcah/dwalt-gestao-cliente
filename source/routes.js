@@ -17,6 +17,7 @@ import Login from './screens/Login';
 import CompanyLink from './screens/CompanyLink';
 import Main from './screens/Main';
 import ProjectDetails from './screens/ProjectDetails';
+import PdfViewer from './screens/PdfViewer';
 
 import {LoadingActivity, NotConnected} from './components/Global';
 
@@ -118,6 +119,25 @@ const AppScreens = ({logged, initiated}) => {
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: false,
           headerTitle: route.params.project.apelidoProjeto,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="PdfViewer"
+        component={PdfViewer}
+        options={({navigation, route}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: 'Visualizador de PDF',
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (
