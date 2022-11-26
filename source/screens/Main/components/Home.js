@@ -37,7 +37,7 @@ const Home = ({navigation}) => {
     setUser(await getUserData());
     const surveys = await getSurveyData();
     const businesss = await getBusinessData();
-    const actSurvey = surveys.filter(i => i.data.accepted && !i.data.finished);
+    const actSurvey = surveys.filter(i => !i.data.finished);
     setBusiness(businesss);
     setProjects(await getProjectsData());
     setActiveSurvey(actSurvey);
