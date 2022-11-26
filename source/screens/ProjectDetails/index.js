@@ -74,7 +74,7 @@ const ProjectDetails = ({navigation, route}) => {
     setLoading(false);
   };
 
-  const sendRequest = () => {
+  const sendRequest = async () => {
     if (title === '' || description === '') {
       return Alert.alert(
         'Erro',
@@ -82,24 +82,42 @@ const ProjectDetails = ({navigation, route}) => {
         [{text: 'OK'}],
       );
     }
-    console.log('send request');
     setRequestLoading(true);
+
+    const allSurveys = await getAllItems({
+      path: `gestaoempresa/business/${project.data.business}/surveys`,
+    });
+
+    const check = await allSurveys.filter(
+      i => i.data.owner === project.data.emailApp && !i.data.finished,
+    );
+
     if (typeRequest !== 'complaint') {
-      createItem({
-        path: `gestaoempresa/business/${project.data.business}/surveys`,
-        params: {
-          accepted: false,
-          finished: false,
-          createdAt: getDate(moment),
-          owner: project.data.emailApp,
-          status: 'Aguardando empresa aceitar o chamado.',
-          projectId: project.key,
-          title: title,
-          text: description,
-        },
-      });
-      setModalRequestVisible(false);
-      ToastAndroid.show('Sua solicitação foi enviada.', ToastAndroid.SHORT);
+      if (check.length !== 0) {
+        setModalRequestVisible(false);
+        setRequestLoading(false);
+        return Alert.alert(
+          'Chamado pendente',
+          'Existe um chamado pendente registrado no sistema, você não pode solicitar outro chamado até que o anterior seja finalizado pela empresa.',
+          [{text: 'OK'}],
+        );
+      } else {
+        createItem({
+          path: `gestaoempresa/business/${project.data.business}/surveys`,
+          params: {
+            accepted: false,
+            finished: false,
+            createdAt: getDate(moment),
+            owner: project.data.emailApp,
+            status: 'Aguardando empresa aceitar o chamado.',
+            projectId: project.key,
+            title: title,
+            text: description,
+          },
+        });
+        setModalRequestVisible(false);
+        ToastAndroid.show('Sua solicitação foi enviada.', ToastAndroid.SHORT);
+      }
     } else {
       createItem({
         path: `gestaoempresa/business/${project.data.business}/complaints`,
@@ -114,6 +132,7 @@ const ProjectDetails = ({navigation, route}) => {
       setModalRequestVisible(false);
       ToastAndroid.show('Sua reclamação foi enviada.', ToastAndroid.SHORT);
     }
+    setRequestLoading(false);
   };
 
   React.useEffect(() => {
@@ -391,6 +410,7 @@ const ProjectDetails = ({navigation, route}) => {
             visible={modalRequestVisible}
             onRequestClose={() => {
               setModalRequestVisible(!modalRequestVisible);
+              setRequestLoading(false);
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
@@ -412,7 +432,7 @@ const ProjectDetails = ({navigation, route}) => {
                         fontWeight: 'bold',
                       }}>
                       Olá, qual a razão da{' '}
-                      {typeRequest === 'complaint' ? 'reclamação' : 'vistoria'}
+                      {typeRequest === 'complaint' ? 'reclamação' : 'vistoria'}?
                     </Text>
                     <TextInput
                       style={styles.textInput}
