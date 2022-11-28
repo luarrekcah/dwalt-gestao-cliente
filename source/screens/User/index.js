@@ -76,7 +76,7 @@ const Business = ({navigation}) => {
               Linking.openURL('https://wa.me/+556892402096');
             }}
           />
-          <Button icon="android" value="Versão" description="v1.0.0" />
+          <Button icon="android" value="Versão" description="v1.0.4" />
         </ScrollView>
       </View>
     );

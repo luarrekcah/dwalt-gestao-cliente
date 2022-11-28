@@ -1,4 +1,5 @@
 import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -7,7 +8,7 @@ import Home from './components/Home';
 
 import Business from '../Business';
 import User from '../User';
-import {StyleSheet, Text, View} from 'react-native';
+import GrowattServer from '../GrowattServer';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,6 +27,8 @@ const Main = ({navigation}) => {
             iconName = focused ? 'business' : 'business-outline';
           } else if (route.name === 'Usuário') {
             iconName = focused ? 'people' : 'people-outline';
+          } else if (route.name === 'Sistema') {
+            iconName = focused ? 'analytics' : 'analytics-outline';
           }
 
           return (
@@ -51,6 +54,7 @@ const Main = ({navigation}) => {
       initialRouteName="Home">
       <Tab.Screen name="Empresa" component={Business} />
       <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Sistema" component={GrowattServer} />
       <Tab.Screen name="Usuário" component={User} />
     </Tab.Navigator>
   );
