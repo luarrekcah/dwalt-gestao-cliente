@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import Colors from '../../global/colorScheme';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {createItem, getAllItems} from '../../services/Database';
+import {createItem, getAllItems, updateItem} from '../../services/Database';
 import {saveUserAuth} from '../../services/Auth';
+import messaging from '@react-native-firebase/messaging';
 
 const CompanyLink = ({navigation}) => {
   const [value, setValue] = React.useState('');
@@ -50,9 +51,12 @@ const CompanyLink = ({navigation}) => {
   };
 
   const linkConfirm = async () => {
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
     const updatedUser = user;
     updatedUser.email_link = value;
     updatedUser.businessKey = businessData.key;
+    updatedUser.token = token;
 
     const allUsers = await getAllItems({
       path: `gestaoempresa/business/${businessData.key}/customers`,
@@ -63,6 +67,12 @@ const CompanyLink = ({navigation}) => {
       finded.businessKey = businessData.key;
       setUser(finded.data);
       saveUserAuth(finded.data);
+      updateItem({
+        path: `gestaoempresa/business/${businessData.key}/staffs/${finded.key}`,
+        params: {
+          token,
+        },
+      });
     } else {
       setUser(updatedUser);
       saveUserAuth(updatedUser);
