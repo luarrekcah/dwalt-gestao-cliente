@@ -112,5 +112,5 @@ public class MainApplicationReactNativeHost extends ReactNativeHost {
         return specs;
       }
     };
-  }
+    }
 }
