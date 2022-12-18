@@ -209,6 +209,24 @@ const Home = ({navigation}) => {
                           <Text style={styles.bottomStatus}>
                             Status: {item.data.Status}
                           </Text>
+                          <Text style={styles.bottomStatus}>
+                            Obs:
+                            {item.data.RStatus === '' ||
+                            item.data.RStatus === undefined
+                              ? 'Sem observação de Status'
+                              : item.data.RStatus}
+                          </Text>
+                          <Text style={[styles.bottomStatus, {color: '#fff'}]}>
+                            <Icon
+                              name="local-shipping"
+                              size={20}
+                              color="#fff"
+                            />{' '}
+                            {item.data.statusRastreio === '' ||
+                            item.data.statusRastreio === undefined
+                              ? 'Rastreio indisponível'
+                              : item.data.statusRastreio}
+                          </Text>
                         </View>
                       </View>
                     </ImageBackground>

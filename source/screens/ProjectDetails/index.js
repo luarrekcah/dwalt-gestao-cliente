@@ -215,6 +215,27 @@ const ProjectDetails = ({navigation, route}) => {
           </View>
         </ImageBackground>
         <View style={styles.container}>
+          <TextSection value={'Informações'} />
+          <Text style={[styles.bottomStatus, {color: '#000000'}]}>
+            <Icon name="alert-circle" size={20} color="#000000" />{' '}
+            {project.data.RStatus === '' || project.data.RStatus === undefined
+              ? 'Sem observação de Status'
+              : project.data.RStatus}
+          </Text>
+          <Text style={[styles.bottomStatus, {color: '#000000'}]}>
+            <Icon name="truck-fast" size={20} color="#000000" />{' '}
+            {project.data.statusRastreio === '' ||
+            project.data.statusRastreio === undefined
+              ? 'Rastreio indisponível'
+              : project.data.statusRastreio}
+          </Text>
+          <Text style={[styles.bottomStatus, {color: '#000000'}]}>
+            <Icon name="wifi" size={20} color="#000000" />{' '}
+            {project.data.username_growatt === '' ||
+            project.data.username_growatt === undefined
+              ? 'Sem nome de usuário growatt'
+              : project.data.username_growatt}
+          </Text>
           <TextSection value={'Fotos'} />
           <ScrollView horizontal>
             {allMedia.map((item, index) => {
@@ -278,12 +299,13 @@ const ProjectDetails = ({navigation, route}) => {
                     key={index}
                     title={item.data.documentName}
                     haveContent={true}
-                    onPressView={() =>
-                      navigation.navigate('PdfViewer', {
+                    onPressView={
+                      () => Linking.openURL(item.data.documentURL)
+                      /*navigation.navigate('PdfViewer', {
                         source: {
-                          uri: item.data.documentBase64,
+                          uri: item.data.documentURL,
                         },
-                      })
+                      })*/
                     }
                   />
                 );
