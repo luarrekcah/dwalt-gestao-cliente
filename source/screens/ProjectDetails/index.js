@@ -316,6 +316,10 @@ const ProjectDetails = ({navigation, route}) => {
               </Text>
             )}
           </ScrollView>
+          <TextSection value={'Histórico do projeto'} />
+          <Text style={{color: '#000000'}}>
+               Em breve
+              </Text>
           <TextSection value={'Localização'} />
           <TouchableOpacity
             onPress={() => {
