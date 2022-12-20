@@ -14,7 +14,6 @@ const Stack = createNativeStackNavigator();
 
 import Intro from './screens/Intro';
 import Login from './screens/Login';
-import CompanyLink from './screens/CompanyLink';
 import Main from './screens/Main';
 import ProjectDetails from './screens/ProjectDetails';
 import PdfViewer from './screens/PdfViewer';
@@ -54,25 +53,6 @@ const AppScreens = ({logged, initiated}) => {
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: false,
           headerTitle: 'Realize o login',
-          headerTitleAlign: 'center',
-          headerTitleStyle: {color: 'white'},
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL('https://www.dlwalt.com/faq');
-              }}>
-              <Icon name="help" size={30} color="#fff" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="CompanyLink"
-        component={CompanyLink}
-        options={({navigation}) => ({
-          headerStyle: {backgroundColor: Colors.whitetheme.primary},
-          headerTransparent: false,
-          headerTitle: 'Última etapa',
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (

@@ -65,21 +65,26 @@ export const getBusinessData = async () => {
 
 export const getUserData = async () => {
   const userLocal = await getUserAuth();
-  const customers = await getAllItems({
-    path: `/gestaoempresa/business/${userLocal.businessKey}/customers`,
+  console.log(userLocal);
+  const userCloud = await getItems({
+    path: `/gestaoempresa/business/${userLocal.businessKey}/customers/${userLocal.userKey}`,
   });
-  const user = await customers.find(item => {
-    return item.data._id === userLocal._id;
-  });
-  return user;
+  return {key: userLocal.userKey, data: userCloud};
 };
 
 export const getSurveyData = async () => {
   const userLocal = await getUserAuth();
+  const userCloud = await getItems({
+    path: `/gestaoempresa/business/${userLocal.businessKey}/customers/${userLocal.userKey}`,
+  });
   const surveys = await getAllItems({
     path: `/gestaoempresa/business/${userLocal.businessKey}/surveys`,
   });
-  const onlyuser = surveys.filter(i => i.data.owner === userLocal.email);
+  const onlyuser = surveys.filter(
+    i =>
+      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+      userCloud.cpf.replaceAll('-', '').replaceAll('.', ''),
+  );
   return onlyuser;
 };
 
@@ -89,7 +94,7 @@ export const getProjectsData = async () => {
     path: `/gestaoempresa/business/${userLocal.businessKey}/projects`,
   });
   const userProjects = projects.filter(
-    i => i.data.emailApp === userLocal.email,
+    i => i.data.customerID === userLocal.userKey,
   );
   return userProjects;
 };

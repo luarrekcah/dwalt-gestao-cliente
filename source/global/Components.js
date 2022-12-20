@@ -115,6 +115,21 @@ export const SimpleButton = ({icon, onPress, value, type}) => {
         </View>
       </TouchableOpacity>
     );
+  } else if (type === 'white') {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.simplebutton, {backgroundColor: '#fff'}]}>
+        {icon ? (
+          <Icon name={icon} size={25} color={Colors.whitetheme.primary} />
+        ) : (
+          ''
+        )}
+        <View>
+          <Text style={{color: Colors.whitetheme.primary}}>{value}</Text>
+        </View>
+      </TouchableOpacity>
+    );
   } else {
     return (
       <TouchableOpacity

@@ -1,11 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {Image, Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../global/colorScheme';
 import {Button, LoadingActivity, TextSection} from '../../global/Components';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {getUserData} from '../../services/Database';
 import {onLogoutPress} from '../../services/Auth';
+import {version} from '../../../package.json';
 
 const Business = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -18,10 +17,6 @@ const Business = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    GoogleSignin.configure({
-      androidClientId:
-        '335158766865-b8m8hjlf5jm3kmegg8494no8i68jqi0n.apps.googleusercontent.com',
-    });
     const unsubscribe = navigation.addListener('focus', () => {
       loadData();
     });
@@ -34,17 +29,9 @@ const Business = ({navigation}) => {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <Image
-            style={styles.bussinessLogo}
-            source={{
-              uri: user.data.foto,
-            }}
-          />
-          <Text style={styles.bussinessName}>
-            {user.data.nome + ' ' + user.data.sobrenome}
-          </Text>
+          <Text style={styles.bussinessName}>{user.data.nomeComp}</Text>
           <View style={styles.emailBackground}>
-            <Text style={styles.email}>{user.data.email}</Text>
+            <Text style={styles.email}>CPF: {user.data.cpf}</Text>
           </View>
           <TextSection value="Conta" />
           <Button
@@ -76,7 +63,7 @@ const Business = ({navigation}) => {
               Linking.openURL('https://wa.me/+556892402096');
             }}
           />
-          <Button icon="android" value="Versão" description="v1.0.4" />
+          <Button icon="android" value="Versão" description={version} />
         </ScrollView>
       </View>
     );
