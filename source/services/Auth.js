@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 export const isLogged = async () => {
   const userAuth = await AsyncStorage.getItem('user');
@@ -25,13 +24,6 @@ export const saveUserAuth = async user => {
 };
 
 export const onLogoutPress = async ({navigation}) => {
-  try {
-    await GoogleSignin.signInSilently();
-    await GoogleSignin.revokeAccess();
-    await GoogleSignin.signOut();
-  } catch (error) {
-    console.error(error);
-  }
   await cleanUserAuth();
   navigation.reset({
     index: 0,

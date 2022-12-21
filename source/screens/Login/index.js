@@ -14,6 +14,7 @@ import {SimpleButton} from '../../global/Components';
 import {getAllItems, updateItem} from '../../services/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import {TextInputMask} from 'react-native-masked-text';
 
 const Login = ({navigation}) => {
   const [cpfValue, setCpfValue] = React.useState('');
@@ -120,12 +121,15 @@ const Login = ({navigation}) => {
           onBlur={verifyBusiness}
           onChangeText={text => setBusinessEmail(text)}
         />
-        <TextInput
+        <TextInputMask
           style={styles.textInput}
           placeholder="CPF"
           placeholderTextColor="#fff"
-          autoCapitalize="none"
-          onChangeText={text => setCpfValue(text)}
+          type={'cpf'}
+          value={cpfValue}
+          onChangeText={text => {
+            setCpfValue(text);
+          }}
         />
         <TextInput
           style={styles.textInput}
