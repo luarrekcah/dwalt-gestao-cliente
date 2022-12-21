@@ -33,7 +33,7 @@ const AppScreens = ({logged, initiated}) => {
         options={({navigation}) => ({
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: true,
-          headerTitle: 'D | Walt Gestão',
+          headerTitle: 'D | Walt Connect',
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (

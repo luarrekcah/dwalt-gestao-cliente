@@ -27,6 +27,7 @@ import {
   getAllItems,
   getDate,
   getItems,
+  getUserData,
   updateItem,
 } from '../../services/Database';
 import {getUserAuth} from '../../services/Auth';
@@ -50,6 +51,7 @@ const ProjectDetails = ({navigation, route}) => {
   const [loadingModal, setLoadingModal] = React.useState(false);
   const [typeRequest, setTypeRequest] = React.useState('');
   const [modalRequestVisible, setModalRequestVisible] = React.useState(false);
+  const [user, setUser] = React.useState();
 
   const loadData = async () => {
     setLoading(true);
@@ -71,6 +73,8 @@ const ProjectDetails = ({navigation, route}) => {
       }),
     );
 
+    setUser(await getUserData());
+
     setLoading(false);
   };
 
@@ -89,7 +93,7 @@ const ProjectDetails = ({navigation, route}) => {
     });
 
     const check = await allSurveys.filter(
-      i => i.data.owner === project.data.emailApp && !i.data.finished,
+      i => i.data.owner === user.data.cpf && !i.data.finished,
     );
 
     if (typeRequest !== 'complaint') {
@@ -108,7 +112,7 @@ const ProjectDetails = ({navigation, route}) => {
             accepted: false,
             finished: false,
             createdAt: getDate(moment),
-            owner: project.data.emailApp,
+            owner: user.data.cpf,
             status: 'Aguardando empresa aceitar o chamado.',
             projectId: project.key,
             title: title,
@@ -123,7 +127,7 @@ const ProjectDetails = ({navigation, route}) => {
         path: `gestaoempresa/business/${project.data.business}/complaints`,
         params: {
           createdAt: getDate(moment),
-          owner: project.data.emailApp,
+          owner: user.data.cpf,
           projectId: project.key,
           title: title,
           text: description,
