@@ -68,7 +68,7 @@ const Home = ({navigation}) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.headerDetail}>
             <Text style={styles.welcome}>
-              Bem vindo{user === undefined ? '' : ' ' + user.data.nomeComp}!
+              Bem vindo{user === undefined ? '' : ' ' + user.data.nomeComp.split(" ")[0]}!
             </Text>
             <Text style={styles.linkedOn}>
               Vinculado a {business.data.info.documents.nome_fantasia}
