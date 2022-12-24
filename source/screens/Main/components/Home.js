@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ToastAndroid,
+  Image,
 } from 'react-native';
 import moment from '../../../vendors/moment';
 import Colors from '../../../global/colorScheme';
@@ -105,8 +106,10 @@ const Home = ({navigation}) => {
                 </Text>
               </View>
               <View>
-                <Text style={{color: '#000000'}}>ICON</Text>
-
+                <Image
+                  style={{width: 170, height: 70, resizeMode: 'stretch'}}
+                  source={require('../../../../assets/home/sunset-sunrise.png')}
+                />
                 <View
                   style={{
                     flexDirection: 'row',
