@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   Image,
+  Dimensions,
 } from 'react-native';
 import moment from '../../../vendors/moment';
 import Colors from '../../../global/colorScheme';
@@ -26,6 +27,7 @@ import {
   getUserData,
 } from '../../../services/Database';
 import {status} from '../../../utils/dictionary';
+import {LineChart} from 'react-native-chart-kit';
 
 const Home = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -94,7 +96,7 @@ const Home = ({navigation}) => {
                 </Text>
                 <Text
                   style={{
-                    color: '#000000',
+                    color: '#6e6f70',
                     fontWeight: '600',
                     marginBottom: 10,
                   }}>
@@ -131,6 +133,60 @@ const Home = ({navigation}) => {
                 <Text style={{color: '#000000', fontWeight: '600'}}>
                   Irradiação solar: 345w/m²
                 </Text>
+              </View>
+              <View style={{marginTop: 20}}>
+                <Text
+                  style={{color: '#5d5e5e', fontWeight: '900', fontSize: 20}}>
+                  Gráfico Irradiação solar
+                </Text>
+                <LineChart
+                  data={{
+                    labels: [
+                      '07:00',
+                      '08:00',
+                      '09:00',
+                      '10:00',
+                      '11:00',
+                      '12:00',
+                      '13:00',
+                      '14:00',
+                      '15:00',
+                      '16:00',
+                    ],
+                    datasets: [
+                      {
+                        data: [200, 344, 234, 566, 334, 43, 545, 343, 67, 132],
+                      },
+                    ],
+                  }}
+                  width={Dimensions.get('window').width - 20} // from react-native
+                  height={240}
+                  yAxisLabel=""
+                  yAxisSuffix="w/m²"
+                  yAxisInterval={1} // optional, defaults to 1
+                  chartConfig={{
+                    backgroundColor: Colors.whitetheme.primary,
+                    backgroundGradientFrom: Colors.whitetheme.primary,
+                    backgroundGradientTo: Colors.whitetheme.primary,
+                    decimalPlaces: 0, // optional, defaults to 2dp
+                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    labelColor: (opacity = 1) =>
+                      `rgba(255, 255, 255, ${opacity})`,
+                    style: {
+                      borderRadius: 16,
+                    },
+                    propsForDots: {
+                      r: '6',
+                      strokeWidth: '2',
+                      stroke: '#fff',
+                    },
+                  }}
+                  bezier
+                  style={{
+                    marginVertical: 8,
+                    borderRadius: 16,
+                  }}
+                />
               </View>
             </View>
 
