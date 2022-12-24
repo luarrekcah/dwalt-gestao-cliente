@@ -42,8 +42,8 @@ const Main = () => {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
-      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Empresa" component={Business} />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Sistema" component={GrowattServer} />
       <Tab.Screen name="Usuário" component={User} />
     </Tab.Navigator>
