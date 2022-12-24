@@ -24,6 +24,7 @@
     "moment": "^2.29.4",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-animated-nav-tab-bar": "^3.1.8",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-blob-util": "^0.17.0",
     "react-native-file-viewer": "^2.1.5",
@@ -37,7 +38,8 @@
     "react-native-screens": "^3.17.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-webview": "^11.25.0",
-    "react-navigation": "^4.4.4"
+    "react-navigation": "^4.4.4",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
