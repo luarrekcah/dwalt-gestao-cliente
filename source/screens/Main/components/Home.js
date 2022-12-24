@@ -60,6 +60,27 @@ const Home = ({navigation}) => {
     return kwpTotal;
   };
 
+  const status = ({value}) => {
+    switch (value) {
+      case 'dadosEntregue':
+        return 'Dados Entregues';
+      case 'protocolado':
+        return 'Projeto Protocolado';
+      case 'aprovado':
+        return 'Projeto Aprovado';
+      case 'equipamentoEntregue':
+        return 'Equipamentos foram entregues';
+      case 'concluido':
+        return 'Instalação concluída';
+      case 'vistoriaSolicitada':
+        return 'Vistoria Solicitada';
+      case 'vistoriaAprovada':
+        return 'Vistoria Aprovada';
+      case 'finalizado':
+        return 'Projeto Finalizado';
+    }
+  };
+
   if (loading) {
     return <LoadingActivity />;
   } else {
@@ -196,38 +217,80 @@ const Home = ({navigation}) => {
                       imageStyle={styles.imageCard}
                       source={require('../../../../assets/home/bannerbackground.jpg')}>
                       <View style={styles.projectCard}>
-                        <Text style={styles.projectTitle}>
-                          {item.data.apelidoProjeto}
-                        </Text>
-                        <Text style={styles.projectCategory}>
-                          {item.data.category}
-                        </Text>
-                        <View style={styles.bottomProject}>
-                          <Text style={styles.bottomKwp}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            justifyContent: 'space-between',
+                            marginBottom: 10,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: '#fff',
+                              fontWeight: 'bold',
+                            }}>
+                            {item.data.apelidoProjeto}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: '#fff',
+                              fontWeight: 'bold',
+                            }}>
                             <Icon name="flash-on" size={20} color="#fff" />
                             {item.data.kwp}
                             kWp
                           </Text>
-                          <Text style={styles.bottomStatus}>
-                            Status: {item.data.Status}
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                          }}>
+                          <View
+                            style={{
+                              backgroundColor: '#fff',
+                              paddingHorizontal: 10,
+                              marginRight: 20,
+                              paddingVertical: 5,
+                              borderRadius: 100,
+                            }}>
+                            <Text
+                              style={{
+                                color: Colors.whitetheme.primary,
+                                fontWeight: 'bold',
+                                fontSize: 10,
+                              }}>
+                              {item.data.category.toUpperCase()}
+                            </Text>
+                          </View>
+                          <Text style={{color: '#13fc03', fontWeight: 'bold'}}>
+                            On-line
                           </Text>
-                          <Text style={styles.bottomStatus}>
-                            Obs:
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                            marginTop: 20,
+                          }}>
+                          <Text style={{color: '#fff', fontWeight: '900'}}>
+                            {status({value: item.data.Status})}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                          }}>
+                          <Text style={{color: '#fff'}}>
                             {item.data.RStatus === '' ||
                             item.data.RStatus === undefined
                               ? 'Sem observação de Status'
                               : item.data.RStatus}
-                          </Text>
-                          <Text style={[styles.bottomStatus, {color: '#fff'}]}>
-                            <Icon
-                              name="local-shipping"
-                              size={20}
-                              color="#fff"
-                            />{' '}
-                            {item.data.statusRastreio === '' ||
-                            item.data.statusRastreio === undefined
-                              ? 'Rastreio indisponível'
-                              : item.data.statusRastreio}
                           </Text>
                         </View>
                       </View>
@@ -264,6 +327,7 @@ const styles = new StyleSheet.create({
     padding: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    paddingBottom: 100,
   },
   nullWarn: {color: '#000000', alignSelf: 'center'},
   marginCard: {marginVertical: 10},
