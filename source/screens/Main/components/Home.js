@@ -78,6 +78,59 @@ const Home = ({navigation}) => {
             </Text>
           </View>
           <View style={styles.backgroundDetail}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                paddingTop: 20,
+              }}>
+              <View>
+                <Text style={{color: '#000000'}}>ICON</Text>
+                <Text
+                  style={{color: '#000000', fontSize: 25, fontWeight: '900'}}>
+                  Acrelândia
+                </Text>
+                <Text
+                  style={{
+                    color: '#000000',
+                    fontWeight: '600',
+                    marginBottom: 10,
+                  }}>
+                  Céu limpo
+                </Text>
+                <Text style={{color: '#000000'}}>Direção do vento: NORTE</Text>
+                <Text style={{color: '#000000'}}>
+                  Velocidade do vento: 8km/h
+                </Text>
+              </View>
+              <View>
+                <Text style={{color: '#000000'}}>ICON</Text>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    marginBottom: 10,
+                  }}>
+                  <Text style={{color: '#000000', fontWeight: '900'}}>
+                    06:34
+                  </Text>
+                  <Text style={{color: '#000000', fontWeight: '900'}}>
+                    -----------
+                  </Text>
+                  <Text style={{color: '#000000', fontWeight: '900'}}>
+                    17:23
+                  </Text>
+                </View>
+
+                <Text style={{color: '#000000', fontWeight: '600'}}>
+                  Irradiação solar: 345w/m²
+                </Text>
+              </View>
+            </View>
+
             <TextSection value={'Informações'} />
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <MiniCard

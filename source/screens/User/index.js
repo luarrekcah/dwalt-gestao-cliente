@@ -35,6 +35,13 @@ const Business = ({navigation}) => {
           </View>
           <TextSection value="Conta" />
           <Button
+            icon="card-account-details"
+            value="Meus documentos"
+            onPress={async () => {
+              navigation.navigate('Documents');
+            }}
+          />
+          <Button
             icon="logout"
             value="Sair da Conta"
             onPress={async () => {
