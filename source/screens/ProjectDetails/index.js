@@ -32,6 +32,7 @@ import {
 } from '../../services/Database';
 import {getUserAuth} from '../../services/Auth';
 import moment from 'moment/moment';
+import {status} from '../../utils/dictionary';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -202,18 +203,64 @@ const ProjectDetails = ({navigation, route}) => {
           style={styles.backgroundImage}
           source={require('../../../assets/home/bannerbackground.jpg')}>
           <View style={styles.projectCard}>
-            <Text style={styles.projectTitle}>
-              {project.data.apelidoProjeto}
-            </Text>
-            <Text style={styles.projectCategory}>{project.data.category}</Text>
-            <View style={styles.bottomProject}>
-              <Text style={styles.bottomKwp}>
-                <Icon name="flash" size={20} color="#fff" />
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                marginBottom: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: '#fff',
+                  fontWeight: 'bold',
+                }}>
+                {project.data.apelidoProjeto}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: '#fff',
+                  fontWeight: 'bold',
+                }}>
                 {project.data.kwp}
                 kWp
               </Text>
-              <Text style={styles.bottomStatus}>
-                Status: {project.data.Status}
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+              }}>
+              <View
+                style={{
+                  backgroundColor: '#fff',
+                  paddingHorizontal: 10,
+                  marginRight: 20,
+                  paddingVertical: 5,
+                  borderRadius: 100,
+                }}>
+                <Text
+                  style={{
+                    color: Colors.whitetheme.primary,
+                    fontWeight: 'bold',
+                    fontSize: 10,
+                  }}>
+                  {project.data.category.toUpperCase()}
+                </Text>
+              </View>
+              <Text style={{color: '#13fc03', fontWeight: 'bold'}}>
+                On-line
+              </Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: '#fff',
+                  fontWeight: 'bold',
+                }}>
+                3235kW
               </Text>
             </View>
           </View>
@@ -512,7 +559,7 @@ const styles = new StyleSheet.create({
     backgroundColor: '#fff',
   },
   backgroundImage: {
-    height: 250,
+    height: 170,
   },
   projectCard: {
     padding: 30,

@@ -24,6 +24,7 @@ import {
   getSurveyData,
   getUserData,
 } from '../../../services/Database';
+import {status} from '../../../utils/dictionary';
 
 const Home = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -58,27 +59,6 @@ const Home = ({navigation}) => {
       kwpTotal += Number(item.data.kwp.replaceAll(',', '.'));
     });
     return kwpTotal;
-  };
-
-  const status = ({value}) => {
-    switch (value) {
-      case 'dadosEntregue':
-        return 'Dados Entregues';
-      case 'protocolado':
-        return 'Projeto Protocolado';
-      case 'aprovado':
-        return 'Projeto Aprovado';
-      case 'equipamentoEntregue':
-        return 'Equipamentos foram entregues';
-      case 'concluido':
-        return 'Instalação concluída';
-      case 'vistoriaSolicitada':
-        return 'Vistoria Solicitada';
-      case 'vistoriaAprovada':
-        return 'Vistoria Aprovada';
-      case 'finalizado':
-        return 'Projeto Finalizado';
-    }
   };
 
   if (loading) {
@@ -247,6 +227,7 @@ const Home = ({navigation}) => {
                           style={{
                             flexDirection: 'row',
                             flexWrap: 'wrap',
+                            justifyContent: 'space-between',
                           }}>
                           <View
                             style={{
@@ -267,6 +248,19 @@ const Home = ({navigation}) => {
                           </View>
                           <Text style={{color: '#13fc03', fontWeight: 'bold'}}>
                             On-line
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: '#fff',
+                              fontWeight: 'bold',
+                            }}>
+                            <Icon
+                              name="battery-charging-full"
+                              size={20}
+                              color="#fff"
+                            />
+                            3235kW
                           </Text>
                         </View>
                         <View
