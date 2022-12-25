@@ -29,6 +29,7 @@ import {
 import {status} from '../../../utils/dictionary';
 import {LineChart} from 'react-native-chart-kit';
 import axios from 'axios';
+import Geolocation from '@react-native-community/geolocation';
 
 const Home = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -47,19 +48,20 @@ const Home = ({navigation}) => {
     setBusiness(businesss);
     setProjects(await getProjectsData());
     setActiveSurvey(actSurvey);
-
-    axios
-      .get('https://api.open-meteo.com/v1/forecast', {
-        params: {
-          latitude: '-9.83',
-          longitude: '-66.88',
-          hourly: 'temperature_2m,direct_radiation',
-          timezone: 'auto',
-          start_date: moment().format('YYYY-MM-DD'),
-          end_date: moment().format('YYYY-MM-DD'),
-        },
-      })
-      .then(r => setIrradiation(r.data));
+    Geolocation.getCurrentPosition(info => {
+      axios
+        .get('https://api.open-meteo.com/v1/forecast', {
+          params: {
+            latitude: info.coords.latitude,
+            longitude: info.coords.longitude,
+            hourly: 'temperature_2m,direct_radiation',
+            timezone: 'auto',
+            start_date: moment().format('YYYY-MM-DD'),
+            end_date: moment().format('YYYY-MM-DD'),
+          },
+        })
+        .then(r => setIrradiation(r.data));
+    });
     setLoading(false);
   };
 
