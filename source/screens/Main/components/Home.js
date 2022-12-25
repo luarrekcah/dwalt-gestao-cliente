@@ -28,6 +28,7 @@ import {
 } from '../../../services/Database';
 import {status} from '../../../utils/dictionary';
 import {LineChart} from 'react-native-chart-kit';
+import axios from 'axios';
 
 const Home = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -35,6 +36,7 @@ const Home = ({navigation}) => {
   const [business, setBusiness] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [activeSurvey, setActiveSurvey] = React.useState([]);
+  const [irradiation, setIrradiation] = React.useState([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -45,6 +47,19 @@ const Home = ({navigation}) => {
     setBusiness(businesss);
     setProjects(await getProjectsData());
     setActiveSurvey(actSurvey);
+
+    axios
+      .get('https://api.open-meteo.com/v1/forecast', {
+        params: {
+          latitude: '-9.83',
+          longitude: '-66.88',
+          hourly: 'temperature_2m,direct_radiation',
+          timezone: 'auto',
+          start_date: moment().format('YYYY-MM-DD'),
+          end_date: moment().format('YYYY-MM-DD'),
+        },
+      })
+      .then(r => setIrradiation(r.data));
     setLoading(false);
   };
 
@@ -137,56 +152,72 @@ const Home = ({navigation}) => {
               <View style={{marginTop: 20}}>
                 <Text
                   style={{color: '#5d5e5e', fontWeight: '900', fontSize: 20}}>
-                  Gráfico Irradiação solar
+                  Irradiação solar hoje{' '}
+                  <Text style={{fontSize: 10}}>{moment().format('DD/MM')}</Text>
                 </Text>
-                <LineChart
-                  data={{
-                    labels: [
-                      '07:00',
-                      '08:00',
-                      '09:00',
-                      '10:00',
-                      '11:00',
-                      '12:00',
-                      '13:00',
-                      '14:00',
-                      '15:00',
-                      '16:00',
-                    ],
-                    datasets: [
-                      {
-                        data: [200, 344, 234, 566, 334, 43, 545, 343, 67, 132],
+                {irradiation.hourly ? (
+                  <LineChart
+                    data={{
+                      labels: [
+                        '07:00',
+                        '08:00',
+                        '09:00',
+                        '10:00',
+                        '11:00',
+                        '12:00',
+                        '13:00',
+                        '14:00',
+                        '15:00',
+                        '16:00',
+                      ],
+                      datasets: [
+                        {
+                          data: [
+                            irradiation.hourly.direct_radiation[6],
+                            irradiation.hourly.direct_radiation[7],
+                            irradiation.hourly.direct_radiation[8],
+                            irradiation.hourly.direct_radiation[9],
+                            irradiation.hourly.direct_radiation[10],
+                            irradiation.hourly.direct_radiation[11],
+                            irradiation.hourly.direct_radiation[12],
+                            irradiation.hourly.direct_radiation[13],
+                            irradiation.hourly.direct_radiation[14],
+                            irradiation.hourly.direct_radiation[15],
+                          ],
+                        },
+                      ],
+                    }}
+                    width={Dimensions.get('window').width - 20} // from react-native
+                    height={240}
+                    yAxisLabel=""
+                    yAxisSuffix="w/m²"
+                    yAxisInterval={1} // optional, defaults to 1
+                    chartConfig={{
+                      backgroundColor: Colors.whitetheme.primary,
+                      backgroundGradientFrom: Colors.whitetheme.primary,
+                      backgroundGradientTo: Colors.whitetheme.primary,
+                      decimalPlaces: 0, // optional, defaults to 2dp
+                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                      labelColor: (opacity = 1) =>
+                        `rgba(255, 255, 255, ${opacity})`,
+                      style: {
+                        borderRadius: 16,
                       },
-                    ],
-                  }}
-                  width={Dimensions.get('window').width - 20} // from react-native
-                  height={240}
-                  yAxisLabel=""
-                  yAxisSuffix="w/m²"
-                  yAxisInterval={1} // optional, defaults to 1
-                  chartConfig={{
-                    backgroundColor: Colors.whitetheme.primary,
-                    backgroundGradientFrom: Colors.whitetheme.primary,
-                    backgroundGradientTo: Colors.whitetheme.primary,
-                    decimalPlaces: 0, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    labelColor: (opacity = 1) =>
-                      `rgba(255, 255, 255, ${opacity})`,
-                    style: {
+                      propsForDots: {
+                        r: '6',
+                        strokeWidth: '2',
+                        stroke: '#fff',
+                      },
+                    }}
+                    bezier
+                    style={{
+                      marginVertical: 8,
                       borderRadius: 16,
-                    },
-                    propsForDots: {
-                      r: '6',
-                      strokeWidth: '2',
-                      stroke: '#fff',
-                    },
-                  }}
-                  bezier
-                  style={{
-                    marginVertical: 8,
-                    borderRadius: 16,
-                  }}
-                />
+                    }}
+                  />
+                ) : (
+                  ''
+                )}
               </View>
             </View>
 
