@@ -248,7 +248,7 @@ const Home = ({navigation}) => {
                         fontSize: 25,
                         fontWeight: '900',
                       }}>
-                      Hoje {irradiation.current_weather.temperature}
+                      {irradiation.current_weather.temperature}
                       °C
                     </Text>
                     <Text
