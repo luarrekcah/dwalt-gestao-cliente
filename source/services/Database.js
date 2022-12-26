@@ -65,7 +65,7 @@ export const getBusinessData = async () => {
 
 export const getGrowattData = async () => {
   const userLocal = await getUserAuth();
-  const growatt = await getAllItems({
+  const growatt = await getItems({
     path: `gestaoempresa/business/${userLocal.businessKey}/growatt`,
   });
   return growatt;

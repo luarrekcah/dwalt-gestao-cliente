@@ -41,14 +41,15 @@ const Home = ({navigation}) => {
   const [loading, setLoading] = React.useState(true);
   const [activeSurvey, setActiveSurvey] = React.useState([]);
   const [irradiation, setIrradiation] = React.useState([]);
+  const [growatt, setGrowatt] = React.useState();
 
   const loadData = async () => {
     setLoading(true);
+    setGrowatt(await getGrowattData());
     setUser(await getUserData());
     const surveys = await getSurveyData();
     const businesss = await getBusinessData();
     const actSurvey = surveys.filter(i => !i.data.finished);
-    const growatt = await getGrowattData();
     setBusiness(businesss);
     setProjects(await getProjectsData());
     setActiveSurvey(actSurvey);
@@ -68,7 +69,6 @@ const Home = ({navigation}) => {
           },
         })
         .then(r => {
-          console.log(r.data);
           setIrradiation(r.data);
         });
     });
@@ -90,6 +90,17 @@ const Home = ({navigation}) => {
       kwpTotal += Number(item.data.kwp.replaceAll(',', '.'));
     });
     return kwpTotal;
+  };
+
+  const getGrowattProject = plantName => {
+    if (growatt) {
+      const finded = growatt.plantList.data.data.plants.find(
+        g => g.name === plantName,
+      );
+      return finded;
+    } else {
+      return [];
+    }
   };
 
   const weatherDict = {
@@ -554,22 +565,37 @@ const Home = ({navigation}) => {
                               {item.data.category.toUpperCase()}
                             </Text>
                           </View>
-                          <Text style={{color: '#13fc03', fontWeight: 'bold'}}>
-                            On-line
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              color: '#fff',
-                              fontWeight: 'bold',
-                            }}>
-                            <Icon
-                              name="battery-charging-full"
-                              size={20}
-                              color="#fff"
-                            />
-                            3235kW
-                          </Text>
+                          {item.data.username_growatt && growatt ? (
+                            <>
+                              <Text
+                                style={{color: '#13fc03', fontWeight: 'bold'}}>
+                                Status inversor{' '}
+                                {
+                                  getGrowattProject(item.data.username_growatt)
+                                    .status
+                                }
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 20,
+                                  color: '#fff',
+                                  fontWeight: 'bold',
+                                }}>
+                                <Icon
+                                  name="battery-charging-full"
+                                  size={20}
+                                  color="#fff"
+                                />
+                                {
+                                  getGrowattProject(item.data.username_growatt)
+                                    .total_energy
+                                }
+                                kW
+                              </Text>
+                            </>
+                          ) : (
+                            ''
+                          )}
                         </View>
                         <View
                           style={{
