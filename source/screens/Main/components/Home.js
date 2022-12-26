@@ -23,6 +23,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
   getBusinessData,
+  getGrowattData,
   getItems,
   getProjectsData,
   getSurveyData,
@@ -47,6 +48,7 @@ const Home = ({navigation}) => {
     const surveys = await getSurveyData();
     const businesss = await getBusinessData();
     const actSurvey = surveys.filter(i => !i.data.finished);
+    const growatt = await getGrowattData();
     setBusiness(businesss);
     setProjects(await getProjectsData());
     setActiveSurvey(actSurvey);
@@ -70,6 +72,7 @@ const Home = ({navigation}) => {
           setIrradiation(r.data);
         });
     });
+
     setLoading(false);
   };
 
