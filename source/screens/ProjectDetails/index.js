@@ -11,6 +11,7 @@ import {
   TextInput,
   Alert,
   ToastAndroid,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
@@ -33,6 +34,7 @@ import {
 import {getUserAuth} from '../../services/Auth';
 import moment from 'moment/moment';
 import {status} from '../../utils/dictionary';
+import {LineChart} from 'react-native-chart-kit';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -53,6 +55,7 @@ const ProjectDetails = ({navigation, route}) => {
   const [typeRequest, setTypeRequest] = React.useState('');
   const [modalRequestVisible, setModalRequestVisible] = React.useState(false);
   const [user, setUser] = React.useState();
+  const [chardata, setChartdata] = React.useState();
 
   const loadData = async () => {
     setLoading(true);
@@ -68,13 +71,66 @@ const ProjectDetails = ({navigation, route}) => {
       }),
     );
 
-    setProjectData(
-      await getItems({
-        path: `gestaoempresa/business/${project.data.business}/projects/${project.key}`,
-      }),
-    );
+    const pjData = await getItems({
+      path: `gestaoempresa/business/${project.data.business}/projects/${project.key}`,
+    });
+
+    setProjectData(pjData);
 
     setUser(await getUserData());
+
+    const power = [],
+      labelsMonths = [];
+
+    if (pjData.month_power) {
+      pjData.month_power.data.data.energys.forEach(m => {
+        const month = m.date.split('-')[1];
+        switch (month) {
+          case '01':
+            labelsMonths.push('Jan');
+            break;
+          case '02':
+            labelsMonths.push('Fev');
+            break;
+          case '03':
+            labelsMonths.push('Mar');
+            break;
+          case '04':
+            labelsMonths.push('Abr');
+            break;
+          case '05':
+            labelsMonths.push('Mai');
+            break;
+          case '06':
+            labelsMonths.push('Jun');
+            break;
+          case '07':
+            labelsMonths.push('Jul');
+            break;
+          case '08':
+            labelsMonths.push('Ago');
+            break;
+          case '09':
+            labelsMonths.push('Set');
+            break;
+          case '10':
+            labelsMonths.push('Out');
+            break;
+          case '11':
+            labelsMonths.push('Nov');
+            break;
+          case '12':
+            labelsMonths.push('Dez');
+            break;
+        }
+        power.push(m.energy);
+      });
+    }
+
+    setChartdata({
+      labels: labelsMonths,
+      power: power,
+    });
 
     setLoading(false);
   };
@@ -367,6 +423,43 @@ const ProjectDetails = ({navigation, route}) => {
               </Text>
             )}
           </ScrollView>
+          <TextSection value={'Histórico de geração'} />
+          <LineChart
+            data={{
+              labels: chardata.labels,
+              datasets: [
+                {
+                  data: chardata.power,
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 40} // from react-native
+            height={240}
+            yAxisLabel=""
+            yAxisSuffix="kwh"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: Colors.whitetheme.primary,
+              backgroundGradientFrom: Colors.whitetheme.primary,
+              backgroundGradientTo: Colors.whitetheme.primary,
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#fff',
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
           <TextSection value={'Histórico do projeto'} />
           <Text style={{color: '#000000'}}>Em breve</Text>
           <TextSection value={'Localização'} />
