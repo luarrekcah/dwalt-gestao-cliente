@@ -90,29 +90,121 @@ const Home = ({navigation}) => {
   };
 
   const weatherDict = {
-    0: {iconURL: '', title: 'Céu limpo'},
-    1: {iconURL: '', title: 'Principalmente claro'},
-    2: {iconURL: '', title: 'Parcialmente nublado'},
-    3: {iconURL: '', title: 'Nublado'},
-    45: {iconURL: '', title: 'Neblina'},
-    48: {iconURL: '', title: 'Nevoeiro'},
-    56: {iconURL: '', title: 'Garoa congelante leve'},
-    57: {iconURL: '', title: 'Garoa congelante densa'},
-    61: {iconURL: '', title: 'Chuva ligeira'},
-    63: {iconURL: '', title: 'Chuva moderada'},
-    65: {iconURL: '', title: 'Chuva forte'},
-    66: {iconURL: '', title: 'Chuva congelante leve'},
-    67: {iconURL: '', title: 'Chuva congelante pesada'},
-    71: {iconURL: '', title: 'Queda de neve leve'},
-    73: {iconURL: '', title: 'Queda de neve moderada'},
-    75: {iconURL: '', title: 'Queda de neve pesada'},
-    77: {iconURL: '', title: 'Grãos de neve'},
-    80: {iconURL: '', title: 'Chuva leve'},
-    81: {iconURL: '', title: 'Chuva moderada'},
-    82: {iconURL: '', title: 'Chuva violenta'},
-    95: {iconURL: '', title: 'Trovoada ligeira ou moderada'},
-    96: {iconURL: '', title: 'Trovoada com granizo leve'},
-    99: {iconURL: '', title: 'Trovoada com granizo pesado'},
+    0: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-forecast-sun-nature-light-lightning-shine-15478.png',
+      title: 'Céu limpo',
+    },
+    1: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-forecast-cloud-clouds-cloudy-sun-partly-sunny-15476.png',
+      title: 'Predominantemente limpo',
+    },
+    2: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-cloud-clouds-sunny-sun-15473.png',
+      title: 'Parcialmente nublado',
+    },
+    3: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-cloud-clouds-sunny-sun-15473.png',
+      title: 'Nublado',
+    },
+    45: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-sun-mountain-cloud-hill-wind-windy-15454.png',
+      title: 'Neblina',
+    },
+    48: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-snow-cloud-nature-wind-15460.png',
+      title: 'Nevoeiro',
+    },
+    56: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-sun-mountain-cloud-hill-wind-windy-15454.png',
+      title: 'Garoa congelante leve',
+    },
+    57: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-sun-mountain-cloud-hill-wind-windy-15454.png',
+      title: 'Garoa congelante densa',
+    },
+    61: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-wind-forecast-cloud-clouds-cloudy-rain-15481.png',
+      title: 'Chuva ligeira',
+    },
+    63: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-rain-forecast-cloud-clouds-cloudy-dark-15474.png',
+      title: 'Chuva moderada',
+    },
+    65: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-cloud-rain-cloudy-lightning-15456.png',
+      title: 'Chuva forte',
+    },
+    66: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-snow-wind-cloudy-lightning-15451.png',
+      title: 'Chuva congelante leve',
+    },
+    67: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-snow-wind-cloudy-lightning-15451.png',
+      title: 'Chuva congelante pesada',
+    },
+    71: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-forecst-temperature-measure-snow-snowfall-flake-15483.png',
+      title: 'Queda de neve leve',
+    },
+    73: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-forecst-temperature-measure-snow-snowfall-flake-15483.png',
+      title: 'Queda de neve moderada',
+    },
+    75: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-forecst-temperature-measure-snow-snowfall-flake-15483.png',
+      title: 'Queda de neve pesada',
+    },
+    77: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-rain-drib-drop-sky-waterdrop-heavy-15492.png',
+      title: 'Grãos de neve',
+    },
+    80: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-wind-forecast-cloud-clouds-cloudy-rain-15481.png',
+      title: 'Chuva leve',
+    },
+    81: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-rain-forecast-cloud-clouds-cloudy-dark-15474.png',
+      title: 'Chuva moderada',
+    },
+    82: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-lightningwind-cloudy-lightning-15487.png',
+      title: 'Chuva violenta',
+    },
+    95: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-lightningwind-cloudy-lightning-15487.png',
+      title: 'Trovoada ligeira ou moderada',
+    },
+    96: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-snow-wind-cloudy-lightning-15451.png',
+      title: 'Trovoada com granizo leve',
+    },
+    99: {
+      iconURL:
+        'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-snow-wind-cloudy-lightning-15451.png',
+      title: 'Trovoada com granizo pesado',
+    },
   };
 
   if (loading) {
@@ -142,7 +234,14 @@ const Home = ({navigation}) => {
                     paddingTop: 20,
                   }}>
                   <View>
-                    <Text style={{color: '#000000'}}>ICON</Text>
+                    <Image
+                      style={{width: 50, height: 50}}
+                      source={{
+                        uri: weatherDict[
+                          irradiation.current_weather.weathercode
+                        ].iconURL,
+                      }}
+                    />
                     <Text
                       style={{
                         color: '#000000',
