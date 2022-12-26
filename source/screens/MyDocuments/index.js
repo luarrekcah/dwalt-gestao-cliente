@@ -6,10 +6,13 @@ import {
   Dimensions,
   TextInput,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import {TextInputMask} from 'react-native-masked-text';
+
 import Colors from '../../global/colorScheme';
-import {getUserData} from '../../services/Database';
+import {LoadingActivity, SimpleButton} from '../../global/Components';
+import {getUserData, updateItem} from '../../services/Database';
 
 const MyDocuments = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -26,8 +29,12 @@ const MyDocuments = ({navigation}) => {
   const [rendaValue, setRendaValue] = React.useState('');
   const [patriValue, setPatriValue] = React.useState('');
 
+  const [loading, setLoading] = React.useState(false);
+
   const loadData = async () => {
+    setLoading(true);
     const userdata = await getUserData();
+    console.log(userdata);
     setUser(userdata);
     setNomeValue(userdata.data.nomeComp);
     setCpfValue(userdata.data.cpf);
@@ -41,6 +48,31 @@ const MyDocuments = ({navigation}) => {
     setOcupValue(userdata.data.ocupacao);
     setRendaValue(userdata.data.renda);
     setPatriValue(userdata.data.patrimonio);
+    setLoading(false);
+  };
+
+  const updateDocs = () => {
+    setLoading(true);
+    const newDocs = {
+      nomeComp: nomeValue,
+      cpf: cpfValue,
+      rg: rgValue,
+      dataNasc: dateValue,
+      nomeMae: maeValue,
+      email: emailValue,
+      celular: cellValue,
+      endCompleto: endValue,
+      profissao: profValue,
+      ocupacao: ocupValue,
+      renda: rendaValue,
+      patrimonio: patriValue,
+    };
+    updateItem({
+      path: `/gestaoempresa/business/${user.data.business}/customers/${user.key}`,
+      params: newDocs,
+    });
+    ToastAndroid.show('Dados atualizados.', ToastAndroid.SHORT);
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -50,159 +82,169 @@ const MyDocuments = ({navigation}) => {
     return unsubscribe;
   }, [navigation]);
 
-  return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.items}>Nome Completo</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Nome Completo"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={nomeValue}
-          onChangeText={text => {
-            setNomeValue(text);
-          }}
-        />
-        <Text style={styles.items}>CPF</Text>
-        <TextInputMask
-          style={styles.textInput}
-          placeholder="CPF"
-          placeholderTextColor={Colors.whitetheme.primary}
-          type={'cpf'}
-          value={cpfValue}
-          onChangeText={text => {
-            setCpfValue(text);
-          }}
-        />
-        <Text style={styles.items}>RG</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="RG"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={rgValue}
-          onChangeText={text => {
-            setRgValue(text);
-          }}
-        />
-        <Text style={styles.items}>Data de Nascimento</Text>
-        <TextInputMask
-          style={styles.textInput}
-          placeholder="Data de nascimento"
-          placeholderTextColor={Colors.whitetheme.primary}
-          type={'datetime'}
-          options={{
-            format: 'DD/MM/YYYY',
-          }}
-          value={dateValue}
-          onChangeText={text => {
-            setDateValue(text);
-          }}
-        />
-        <Text style={styles.items}>Nome da Mãe</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Nome da mãe"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={maeValue}
-          onChangeText={text => {
-            setMaeValue(text);
-          }}
-        />
-        <Text style={styles.items}>E-mail</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="E-mail"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={emailValue}
-          onChangeText={text => {
-            setEmailValue(text);
-          }}
-        />
-        <Text style={styles.items}>Celular</Text>
-        <TextInputMask
-          style={styles.textInput}
-          placeholder="Celular"
-          placeholderTextColor={Colors.whitetheme.primary}
-          type={'cel-phone'}
-          options={{
-            maskType: 'BRL',
-            withDDD: true,
-            dddMask: '+55 (99) ',
-          }}
-          value={cellValue}
-          onChangeText={text => {
-            setCellValue(text);
-          }}
-        />
-        <Text style={styles.items}>Endereço completo</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Endereço Completo"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={endValue}
-          onChangeText={text => {
-            setEndValue(text);
-          }}
-        />
-        <Text style={styles.items}>Profissão</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Profissão"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={profValue}
-          onChangeText={text => {
-            setProfValue(text);
-          }}
-        />
-        <Text style={styles.items}>Ocupação</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Ocupação"
-          placeholderTextColor={Colors.whitetheme.primary}
-          value={ocupValue}
-          onChangeText={text => {
-            setOcupValue(text);
-          }}
-        />
-        <Text style={styles.items}>Renda Mensal</Text>
-        <TextInputMask
-          style={styles.textInput}
-          placeholder="Renda mensal"
-          placeholderTextColor={Colors.whitetheme.primary}
-          type={'money'}
-          options={{
-            precision: 2,
-            separator: ',',
-            delimiter: '.',
-            unit: 'R$',
-            suffixUnit: '',
-          }}
-          value={rendaValue}
-          onChangeText={text => {
-            setRendaValue(text);
-          }}
-        />
-        <Text style={styles.items}>Patrimônio</Text>
-        <TextInputMask
-          style={styles.textInput}
-          placeholder="Patrimônio"
-          placeholderTextColor={Colors.whitetheme.primary}
-          type={'money'}
-          options={{
-            precision: 2,
-            separator: ',',
-            delimiter: '.',
-            unit: 'R$',
-            suffixUnit: '',
-          }}
-          value={patriValue}
-          onChangeText={text => {
-            setPatriValue(text);
-          }}
-        />
-      </View>
-    </ScrollView>
-  );
+  if (loading) {
+    return <LoadingActivity />;
+  } else {
+    return (
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.items}>Nome Completo</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Nome Completo"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={nomeValue}
+            onChangeText={text => {
+              setNomeValue(text);
+            }}
+          />
+          <Text style={styles.items}>CPF</Text>
+          <TextInputMask
+            style={styles.textInput}
+            placeholder="CPF"
+            placeholderTextColor={Colors.whitetheme.primary}
+            type={'cpf'}
+            value={cpfValue}
+            onChangeText={text => {
+              setCpfValue(text);
+            }}
+          />
+          <Text style={styles.items}>RG</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="RG"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={rgValue}
+            onChangeText={text => {
+              setRgValue(text);
+            }}
+          />
+          <Text style={styles.items}>Data de Nascimento</Text>
+          <TextInputMask
+            style={styles.textInput}
+            placeholder="Data de nascimento"
+            placeholderTextColor={Colors.whitetheme.primary}
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
+            value={dateValue}
+            onChangeText={text => {
+              setDateValue(text);
+            }}
+          />
+          <Text style={styles.items}>Nome da Mãe</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Nome da mãe"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={maeValue}
+            onChangeText={text => {
+              setMaeValue(text);
+            }}
+          />
+          <Text style={styles.items}>E-mail</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="E-mail"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={emailValue}
+            onChangeText={text => {
+              setEmailValue(text);
+            }}
+          />
+          <Text style={styles.items}>Celular</Text>
+          <TextInputMask
+            style={styles.textInput}
+            placeholder="Celular"
+            placeholderTextColor={Colors.whitetheme.primary}
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '+55 (99) ',
+            }}
+            value={cellValue}
+            onChangeText={text => {
+              setCellValue(text);
+            }}
+          />
+          <Text style={styles.items}>Endereço completo</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Endereço Completo"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={endValue}
+            onChangeText={text => {
+              setEndValue(text);
+            }}
+          />
+          <Text style={styles.items}>Profissão</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Profissão"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={profValue}
+            onChangeText={text => {
+              setProfValue(text);
+            }}
+          />
+          <Text style={styles.items}>Ocupação</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Ocupação"
+            placeholderTextColor={Colors.whitetheme.primary}
+            value={ocupValue}
+            onChangeText={text => {
+              setOcupValue(text);
+            }}
+          />
+          <Text style={styles.items}>Renda Mensal</Text>
+          <TextInputMask
+            style={styles.textInput}
+            placeholder="Renda mensal"
+            placeholderTextColor={Colors.whitetheme.primary}
+            type={'money'}
+            options={{
+              precision: 2,
+              separator: ',',
+              delimiter: '.',
+              unit: 'R$',
+              suffixUnit: '',
+            }}
+            value={rendaValue}
+            onChangeText={text => {
+              setRendaValue(text);
+            }}
+          />
+          <Text style={styles.items}>Patrimônio</Text>
+          <TextInputMask
+            style={styles.textInput}
+            placeholder="Patrimônio"
+            placeholderTextColor={Colors.whitetheme.primary}
+            type={'money'}
+            options={{
+              precision: 2,
+              separator: ',',
+              delimiter: '.',
+              unit: 'R$',
+              suffixUnit: '',
+            }}
+            value={patriValue}
+            onChangeText={text => {
+              setPatriValue(text);
+            }}
+          />
+
+          <SimpleButton
+            value="Atualizar"
+            type={'primary'}
+            onPress={() => updateDocs()}
+          />
+        </View>
+      </ScrollView>
+    );
+  }
 };
 
 const styles = new StyleSheet.create({
