@@ -221,6 +221,29 @@ const Home = ({navigation}) => {
     },
   };
 
+  const statusDict = {
+    0: {
+      title: 'Desconectado',
+      color: '#a19f9f',
+    },
+    1: {
+      title: 'Normal',
+      color: '#13fc03',
+    },
+    2: {
+      title: 'Aguardando',
+      color: '#13fc03',
+    },
+    3: {
+      title: 'Falha',
+      color: '#fa3916',
+    },
+    4: {
+      title: 'Offline',
+      color: '#a19f9f',
+    },
+  };
+
   if (loading) {
     return <LoadingActivity />;
   } else {
@@ -568,11 +591,22 @@ const Home = ({navigation}) => {
                           {item.data.username_growatt && growatt ? (
                             <>
                               <Text
-                                style={{color: '#13fc03', fontWeight: 'bold'}}>
-                                Status inversor{' '}
+                                style={{
+                                  color: `${
+                                    statusDict[
+                                      getGrowattProject(
+                                        item.data.username_growatt,
+                                      ).status
+                                    ].color
+                                  }`,
+                                  fontWeight: 'bold',
+                                }}>
                                 {
-                                  getGrowattProject(item.data.username_growatt)
-                                    .status
+                                  statusDict[
+                                    getGrowattProject(
+                                      item.data.username_growatt,
+                                    ).status
+                                  ].title
                                 }
                               </Text>
                               <Text
