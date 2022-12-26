@@ -370,7 +370,7 @@ const ProjectDetails = ({navigation, route}) => {
                       color: '#fff',
                       fontWeight: 'bold',
                     }}>
-                    <Icon name="battery-charging-full" size={20} color="#fff" />
+                    <Icon name="battery" size={20} color="#fff" />
                     {
                       getGrowattProject(project.data.username_growatt)
                         .total_energy
