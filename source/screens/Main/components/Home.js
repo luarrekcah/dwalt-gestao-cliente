@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   View,
@@ -38,6 +39,7 @@ const Home = ({navigation}) => {
   const [loading, setLoading] = React.useState(true);
   const [activeSurvey, setActiveSurvey] = React.useState([]);
   const [irradiation, setIrradiation] = React.useState([]);
+  const [weather, setWeather] = React.useState([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -54,13 +56,19 @@ const Home = ({navigation}) => {
           params: {
             latitude: info.coords.latitude,
             longitude: info.coords.longitude,
-            hourly: 'temperature_2m,direct_radiation',
+            hourly: 'temperature_2m,direct_radiation,weathercode',
+            daily:
+              'sunrise,sunset,windspeed_10m_max,winddirection_10m_dominant',
             timezone: 'auto',
+            current_weather: true,
             start_date: moment().format('YYYY-MM-DD'),
             end_date: moment().format('YYYY-MM-DD'),
           },
         })
-        .then(r => setIrradiation(r.data));
+        .then(r => {
+          console.log(r.data);
+          setIrradiation(r.data);
+        });
     });
     setLoading(false);
   };
@@ -81,6 +89,32 @@ const Home = ({navigation}) => {
     return kwpTotal;
   };
 
+  const weatherDict = {
+    0: {iconURL: '', title: 'Céu limpo'},
+    1: {iconURL: '', title: 'Principalmente claro'},
+    2: {iconURL: '', title: 'Parcialmente nublado'},
+    3: {iconURL: '', title: 'Nublado'},
+    45: {iconURL: '', title: 'Neblina'},
+    48: {iconURL: '', title: 'Nevoeiro'},
+    56: {iconURL: '', title: 'Garoa congelante leve'},
+    57: {iconURL: '', title: 'Garoa congelante densa'},
+    61: {iconURL: '', title: 'Chuva ligeira'},
+    63: {iconURL: '', title: 'Chuva moderada'},
+    65: {iconURL: '', title: 'Chuva forte'},
+    66: {iconURL: '', title: 'Chuva congelante leve'},
+    67: {iconURL: '', title: 'Chuva congelante pesada'},
+    71: {iconURL: '', title: 'Queda de neve leve'},
+    73: {iconURL: '', title: 'Queda de neve moderada'},
+    75: {iconURL: '', title: 'Queda de neve pesada'},
+    77: {iconURL: '', title: 'Grãos de neve'},
+    80: {iconURL: '', title: 'Chuva leve'},
+    81: {iconURL: '', title: 'Chuva moderada'},
+    82: {iconURL: '', title: 'Chuva violenta'},
+    95: {iconURL: '', title: 'Trovoada ligeira ou moderada'},
+    96: {iconURL: '', title: 'Trovoada com granizo leve'},
+    99: {iconURL: '', title: 'Trovoada com granizo pesado'},
+  };
+
   if (loading) {
     return <LoadingActivity />;
   } else {
@@ -98,59 +132,77 @@ const Home = ({navigation}) => {
             </Text>
           </View>
           <View style={styles.backgroundDetail}>
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                paddingTop: 20,
-              }}>
-              <View>
-                <Text style={{color: '#000000'}}>ICON</Text>
-                <Text
-                  style={{color: '#000000', fontSize: 25, fontWeight: '900'}}>
-                  Acrelândia
-                </Text>
-                <Text
-                  style={{
-                    color: '#6e6f70',
-                    fontWeight: '600',
-                    marginBottom: 10,
-                  }}>
-                  Céu limpo
-                </Text>
-                <Text style={{color: '#000000'}}>Direção do vento: NORTE</Text>
-                <Text style={{color: '#000000'}}>
-                  Velocidade do vento: 8km/h
-                </Text>
-              </View>
-              <View>
-                <Image
-                  style={{width: 170, height: 70, resizeMode: 'stretch'}}
-                  source={require('../../../../assets/home/sunset-sunrise.png')}
-                />
+            <View>
+              {irradiation.hourly ? (
                 <View
                   style={{
                     flexDirection: 'row',
                     flexWrap: 'wrap',
                     justifyContent: 'space-between',
-                    marginBottom: 10,
+                    paddingTop: 20,
                   }}>
-                  <Text style={{color: '#000000', fontWeight: '900'}}>
-                    06:34
-                  </Text>
-                  <Text style={{color: '#000000', fontWeight: '900'}}>
-                    -----------
-                  </Text>
-                  <Text style={{color: '#000000', fontWeight: '900'}}>
-                    17:23
-                  </Text>
+                  <View>
+                    <Text style={{color: '#000000'}}>ICON</Text>
+                    <Text
+                      style={{
+                        color: '#000000',
+                        fontSize: 25,
+                        fontWeight: '900',
+                      }}>
+                      Hoje {irradiation.current_weather.temperature}
+                      °C
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#6e6f70',
+                        fontWeight: '600',
+                        marginBottom: 10,
+                      }}>
+                      {
+                        weatherDict[irradiation.current_weather.weathercode]
+                          .title
+                      }
+                    </Text>
+                    <Text style={{color: '#000000'}}>
+                      Direção do vento:{' '}
+                      {irradiation.current_weather.winddirection}°
+                    </Text>
+                    <Text style={{color: '#000000'}}>
+                      Velocidade do vento:{' '}
+                      {irradiation.current_weather.windspeed}
+                      km/h
+                    </Text>
+                  </View>
+                  <View>
+                    <Image
+                      style={{width: 170, height: 70, resizeMode: 'stretch'}}
+                      source={require('../../../../assets/home/sunset-sunrise.png')}
+                    />
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-between',
+                        marginBottom: 10,
+                      }}>
+                      <Text style={{color: '#000000', fontWeight: '900'}}>
+                        {moment(irradiation.daily.sunrise[0]).format('HH:MM')}
+                      </Text>
+                      <Text style={{color: '#000000', fontWeight: '900'}}>
+                        -----------
+                      </Text>
+                      <Text style={{color: '#000000', fontWeight: '900'}}>
+                        {moment(irradiation.daily.sunset[0]).format('HH:MM')}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
+              ) : (
+                <View>
+                  <Text>Coletando</Text>
+                </View>
+              )}
 
-                <Text style={{color: '#000000', fontWeight: '600'}}>
-                  Irradiação solar: 345w/m²
-                </Text>
-              </View>
               <View style={{marginTop: 20}}>
                 <Text
                   style={{color: '#5d5e5e', fontWeight: '900', fontSize: 20}}>
