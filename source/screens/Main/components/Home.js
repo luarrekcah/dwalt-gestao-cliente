@@ -10,6 +10,7 @@ import {
   ToastAndroid,
   Image,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import moment from '../../../vendors/moment';
 import Colors from '../../../global/colorScheme';
@@ -39,7 +40,6 @@ const Home = ({navigation}) => {
   const [loading, setLoading] = React.useState(true);
   const [activeSurvey, setActiveSurvey] = React.useState([]);
   const [irradiation, setIrradiation] = React.useState([]);
-  const [weather, setWeather] = React.useState([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -298,78 +298,87 @@ const Home = ({navigation}) => {
                 </View>
               ) : (
                 <View>
-                  <Text>Coletando</Text>
+                  <ActivityIndicator size="small" color="#0000ff" />
                 </View>
               )}
 
               <View style={{marginTop: 20}}>
-                <Text
-                  style={{color: '#5d5e5e', fontWeight: '900', fontSize: 20}}>
-                  Irradiação solar hoje{' '}
-                  <Text style={{fontSize: 10}}>{moment().format('DD/MM')}</Text>
-                </Text>
                 {irradiation.hourly ? (
-                  <LineChart
-                    data={{
-                      labels: [
-                        '07:00',
-                        '08:00',
-                        '09:00',
-                        '10:00',
-                        '11:00',
-                        '12:00',
-                        '13:00',
-                        '14:00',
-                        '15:00',
-                        '16:00',
-                      ],
-                      datasets: [
-                        {
-                          data: [
-                            irradiation.hourly.direct_radiation[6],
-                            irradiation.hourly.direct_radiation[7],
-                            irradiation.hourly.direct_radiation[8],
-                            irradiation.hourly.direct_radiation[9],
-                            irradiation.hourly.direct_radiation[10],
-                            irradiation.hourly.direct_radiation[11],
-                            irradiation.hourly.direct_radiation[12],
-                            irradiation.hourly.direct_radiation[13],
-                            irradiation.hourly.direct_radiation[14],
-                            irradiation.hourly.direct_radiation[15],
-                          ],
+                  <>
+                    <Text
+                      style={{
+                        color: '#5d5e5e',
+                        fontWeight: '900',
+                        fontSize: 20,
+                      }}>
+                      Irradiação solar hoje{' '}
+                      <Text style={{fontSize: 10}}>
+                        {moment().format('DD/MM')}
+                      </Text>
+                    </Text>
+                    <LineChart
+                      data={{
+                        labels: [
+                          '07:00',
+                          '08:00',
+                          '09:00',
+                          '10:00',
+                          '11:00',
+                          '12:00',
+                          '13:00',
+                          '14:00',
+                          '15:00',
+                          '16:00',
+                        ],
+                        datasets: [
+                          {
+                            data: [
+                              irradiation.hourly.direct_radiation[6],
+                              irradiation.hourly.direct_radiation[7],
+                              irradiation.hourly.direct_radiation[8],
+                              irradiation.hourly.direct_radiation[9],
+                              irradiation.hourly.direct_radiation[10],
+                              irradiation.hourly.direct_radiation[11],
+                              irradiation.hourly.direct_radiation[12],
+                              irradiation.hourly.direct_radiation[13],
+                              irradiation.hourly.direct_radiation[14],
+                              irradiation.hourly.direct_radiation[15],
+                            ],
+                          },
+                        ],
+                      }}
+                      width={Dimensions.get('window').width - 20} // from react-native
+                      height={240}
+                      yAxisLabel=""
+                      yAxisSuffix="w/m²"
+                      yAxisInterval={1} // optional, defaults to 1
+                      chartConfig={{
+                        backgroundColor: Colors.whitetheme.primary,
+                        backgroundGradientFrom: Colors.whitetheme.primary,
+                        backgroundGradientTo: Colors.whitetheme.primary,
+                        decimalPlaces: 0,
+                        color: (opacity = 1) =>
+                          `rgba(255, 255, 255, ${opacity})`,
+                        labelColor: (opacity = 1) =>
+                          `rgba(255, 255, 255, ${opacity})`,
+                        style: {
+                          borderRadius: 16,
                         },
-                      ],
-                    }}
-                    width={Dimensions.get('window').width - 20} // from react-native
-                    height={240}
-                    yAxisLabel=""
-                    yAxisSuffix="w/m²"
-                    yAxisInterval={1} // optional, defaults to 1
-                    chartConfig={{
-                      backgroundColor: Colors.whitetheme.primary,
-                      backgroundGradientFrom: Colors.whitetheme.primary,
-                      backgroundGradientTo: Colors.whitetheme.primary,
-                      decimalPlaces: 0, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      labelColor: (opacity = 1) =>
-                        `rgba(255, 255, 255, ${opacity})`,
-                      style: {
+                        propsForDots: {
+                          r: '6',
+                          strokeWidth: '2',
+                          stroke: '#fff',
+                        },
+                      }}
+                      bezier
+                      style={{
+                        marginVertical: 8,
                         borderRadius: 16,
-                      },
-                      propsForDots: {
-                        r: '6',
-                        strokeWidth: '2',
-                        stroke: '#fff',
-                      },
-                    }}
-                    bezier
-                    style={{
-                      marginVertical: 8,
-                      borderRadius: 16,
-                    }}
-                  />
+                      }}
+                    />
+                  </>
                 ) : (
-                  ''
+                  <ActivityIndicator size="small" color="#0000ff" />
                 )}
               </View>
             </View>
