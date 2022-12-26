@@ -38,7 +38,7 @@ const Business = ({navigation}) => {
             icon="card-account-details"
             value="Meus documentos"
             onPress={async () => {
-              navigation.navigate('Documents');
+              navigation.navigate('MyDocuments');
             }}
           />
           <Button

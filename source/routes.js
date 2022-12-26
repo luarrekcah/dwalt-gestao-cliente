@@ -19,6 +19,7 @@ import ProjectDetails from './screens/ProjectDetails';
 import PdfViewer from './screens/PdfViewer';
 
 import {LoadingActivity, NotConnected} from './components/Global';
+import MyDocuments from './screens/MyDocuments';
 
 const AppScreens = ({logged, initiated}) => {
   return (
@@ -118,6 +119,33 @@ const AppScreens = ({logged, initiated}) => {
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: false,
           headerTitle: 'Visualizador de PDF',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Icon name="arrow-back" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL('https://www.dlwalt.com/faq');
+              }}>
+              <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="MyDocuments"
+        component={MyDocuments}
+        options={({navigation, route}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: 'Meus Documentos',
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (
