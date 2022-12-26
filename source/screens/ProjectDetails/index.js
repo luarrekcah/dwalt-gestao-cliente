@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   Text,
@@ -34,7 +35,6 @@ import {
 } from '../../services/Database';
 import {getUserAuth} from '../../services/Auth';
 import moment from 'moment/moment';
-import {status} from '../../utils/dictionary';
 import {LineChart} from 'react-native-chart-kit';
 //import MapView from 'react-native-maps'; desinstalar
 
@@ -346,7 +346,7 @@ const ProjectDetails = ({navigation, route}) => {
                   {project.data.category.toUpperCase()}
                 </Text>
               </View>
-              {project.data.username_growatt && growatt ? (
+              {project.data.username_growattt !== '' ? (
                 <>
                   <Text
                     style={{
@@ -486,7 +486,7 @@ const ProjectDetails = ({navigation, route}) => {
               </Text>
             )}
           </ScrollView>
-          {projectData.data ? (
+          {project.data.username_growattt !== '' ? (
             <>
               <TextSection value={'Histórico de geração'} />
               <LineChart

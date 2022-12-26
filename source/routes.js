@@ -33,7 +33,7 @@ const AppScreens = ({logged, initiated}) => {
         options={({navigation}) => ({
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: true,
-          headerTitle: 'D | Walt Connect',
+          headerTitle: 'D | Walt: Connect',
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (
@@ -71,7 +71,7 @@ const AppScreens = ({logged, initiated}) => {
         options={({navigation}) => ({
           headerStyle: {backgroundColor: Colors.whitetheme.primary},
           headerTransparent: false,
-          headerTitle: 'D | Walt Connect',
+          headerTitle: 'Connect',
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (
@@ -96,6 +96,14 @@ const AppScreens = ({logged, initiated}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
+                navigation.goBack();
+              }}>
+              <Icon name="arrow-back" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
                 Linking.openURL('https://www.dlwalt.com/faq');
               }}>
               <Icon name="help" size={30} color="#fff" />
@@ -113,6 +121,14 @@ const AppScreens = ({logged, initiated}) => {
           headerTitleAlign: 'center',
           headerTitleStyle: {color: 'white'},
           headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Icon name="arrow-back" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL('https://www.dlwalt.com/faq');
