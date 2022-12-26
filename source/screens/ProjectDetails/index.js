@@ -27,6 +27,7 @@ import {
   createItem,
   getAllItems,
   getDate,
+  getGrowattData,
   getItems,
   getUserData,
   updateItem,
@@ -56,9 +57,13 @@ const ProjectDetails = ({navigation, route}) => {
   const [modalRequestVisible, setModalRequestVisible] = React.useState(false);
   const [user, setUser] = React.useState();
   const [chardata, setChartdata] = React.useState();
+  const [growatt, setGrowatt] = React.useState();
 
   const loadData = async () => {
     setLoading(true);
+
+    setGrowatt(await getGrowattData());
+
     setAllmedia(
       await getAllItems({
         path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/photos`,
@@ -133,6 +138,40 @@ const ProjectDetails = ({navigation, route}) => {
     });
 
     setLoading(false);
+  };
+
+  const statusDict = {
+    0: {
+      title: 'Desconectado',
+      color: '#a19f9f',
+    },
+    1: {
+      title: 'Normal',
+      color: '#13fc03',
+    },
+    2: {
+      title: 'Aguardando',
+      color: '#13fc03',
+    },
+    3: {
+      title: 'Falha',
+      color: '#fa3916',
+    },
+    4: {
+      title: 'Offline',
+      color: '#a19f9f',
+    },
+  };
+
+  const getGrowattProject = plantName => {
+    if (growatt) {
+      const finded = growatt.plantList.data.data.plants.find(
+        g => g.name === plantName,
+      );
+      return finded;
+    } else {
+      return [];
+    }
   };
 
   const sendRequest = async () => {
@@ -307,17 +346,41 @@ const ProjectDetails = ({navigation, route}) => {
                   {project.data.category.toUpperCase()}
                 </Text>
               </View>
-              <Text style={{color: '#13fc03', fontWeight: 'bold'}}>
-                On-line
-              </Text>
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: '#fff',
-                  fontWeight: 'bold',
-                }}>
-                3235kW
-              </Text>
+              {project.data.username_growatt && growatt ? (
+                <>
+                  <Text
+                    style={{
+                      color: `${
+                        statusDict[
+                          getGrowattProject(project.data.username_growatt)
+                            .status
+                        ].color
+                      }`,
+                      fontWeight: 'bold',
+                    }}>
+                    {
+                      statusDict[
+                        getGrowattProject(project.data.username_growatt).status
+                      ].title
+                    }
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      color: '#fff',
+                      fontWeight: 'bold',
+                    }}>
+                    <Icon name="battery-charging-full" size={20} color="#fff" />
+                    {
+                      getGrowattProject(project.data.username_growatt)
+                        .total_energy
+                    }
+                    kW
+                  </Text>
+                </>
+              ) : (
+                ''
+              )}
             </View>
           </View>
         </ImageBackground>
