@@ -423,43 +423,51 @@ const ProjectDetails = ({navigation, route}) => {
               </Text>
             )}
           </ScrollView>
-          <TextSection value={'Histórico de geração'} />
-          <LineChart
-            data={{
-              labels: chardata.labels,
-              datasets: [
-                {
-                  data: chardata.power,
-                },
-              ],
-            }}
-            width={Dimensions.get('window').width - 40} // from react-native
-            height={240}
-            yAxisLabel=""
-            yAxisSuffix="kwh"
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: Colors.whitetheme.primary,
-              backgroundGradientFrom: Colors.whitetheme.primary,
-              backgroundGradientTo: Colors.whitetheme.primary,
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: '6',
-                strokeWidth: '2',
-                stroke: '#fff',
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
+          {projectData.data ? (
+            <>
+              <TextSection value={'Histórico de geração'} />
+              <LineChart
+                data={{
+                  labels: chardata.labels,
+                  datasets: [
+                    {
+                      data: chardata.power,
+                    },
+                  ],
+                }}
+                width={Dimensions.get('window').width - 40} // from react-native
+                height={240}
+                yAxisLabel=""
+                yAxisSuffix="kwh"
+                yAxisInterval={1} // optional, defaults to 1
+                chartConfig={{
+                  backgroundColor: Colors.whitetheme.primary,
+                  backgroundGradientFrom: Colors.whitetheme.primary,
+                  backgroundGradientTo: Colors.whitetheme.primary,
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  labelColor: (opacity = 1) =>
+                    `rgba(255, 255, 255, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                  propsForDots: {
+                    r: '6',
+                    strokeWidth: '2',
+                    stroke: '#fff',
+                  },
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+              />
+            </>
+          ) : (
+            ''
+          )}
+
           <TextSection value={'Histórico do projeto'} />
           <Text style={{color: '#000000'}}>Em breve</Text>
           <TextSection value={'Localização'} />
