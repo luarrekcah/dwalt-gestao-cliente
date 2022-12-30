@@ -252,7 +252,7 @@ const Home = ({navigation}) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.headerDetail}>
             <Text style={styles.welcome}>
-              Bem vindo
+              Bem vindo (a)
               {user === undefined ? '' : ' ' + user.data.nomeComp.split(' ')[0]}
               !
             </Text>

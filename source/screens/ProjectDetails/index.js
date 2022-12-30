@@ -164,11 +164,16 @@ const ProjectDetails = ({navigation, route}) => {
   };
 
   const getGrowattProject = plantName => {
-    if (growatt) {
+    const plantNameOK = plantName.replaceAll(' ', '');
+    if (growatt && (plantName !== undefined || plantName !== '')) {
       const finded = growatt.plantList.data.data.plants.find(
-        g => g.name === plantName,
+        g => g.name === plantNameOK,
       );
-      return finded;
+      if (finded) {
+        return finded;
+      } else {
+        return [];
+      }
     } else {
       return [];
     }
@@ -256,22 +261,6 @@ const ProjectDetails = ({navigation, route}) => {
   };
   const dictionary = {
     cod: 'Código do produto',
-    nomeComp: 'Nome completo',
-    cpf: 'CPF',
-    dataNasc: 'Data de nascimento',
-    email: 'E-mail',
-    celular: 'Celular',
-    nomeMae: 'Nome da mãe',
-    rg: 'RG',
-    sexo: 'Sexo',
-    estadoCivil: 'Estado civil',
-    patrimonio: 'Patrimônio',
-    ocupacao: 'Ocupação',
-    profissao: 'Profissão',
-    anos: 'Anos trabalhando',
-    meses: 'Meses atuando',
-    renda: 'Renda Mensal',
-    endCompleto: 'Endereço Completo',
   };
 
   const dictToArray = Object.keys(dictionary).map(key => [
@@ -346,7 +335,7 @@ const ProjectDetails = ({navigation, route}) => {
                   {project.data.category.toUpperCase()}
                 </Text>
               </View>
-              {project.data.username_growattt !== '' ? (
+              {project.data.overview ? (
                 <>
                   <Text
                     style={{
@@ -486,7 +475,7 @@ const ProjectDetails = ({navigation, route}) => {
               </Text>
             )}
           </ScrollView>
-          {project.data.username_growattt !== '' ? (
+          {project.data.overview ? (
             <>
               <TextSection value={'Histórico de geração'} />
               <LineChart
