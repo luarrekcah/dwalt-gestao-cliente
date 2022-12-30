@@ -3,6 +3,8 @@ import {handleClickedNotification} from './source/utils/NotificationHandler';
 import notifee, {EventType} from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 
+import InAppUpdate from './InAppUpdate';
+
 import Routes from './source/routes';
 
 const onNotifeeMessageReceived = async message => {
@@ -37,11 +39,17 @@ const onNotifeeMessageReceived = async message => {
 };
 
 const App = () => {
+  /* componentDidMount(() => {
+    InAppUpdate.checkUpdate();
+  });
+*/
   useEffect(() => {
     //const unsubscribe = messaging().onMessage(onNotifeeMessageReceived);
     const unsubscribe = messaging().setBackgroundMessageHandler(
       onNotifeeMessageReceived,
     );
+
+    InAppUpdate.checkUpdate();
 
     return unsubscribe;
   }, []);
