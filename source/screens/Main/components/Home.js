@@ -252,7 +252,7 @@ const Home = ({navigation}) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.headerDetail}>
             <Text style={styles.welcome}>
-              Bem vindo (a)
+              Bem vindo(a)
               {user === undefined ? '' : ' ' + user.data.nomeComp.split(' ')[0]}
               !
             </Text>
@@ -456,12 +456,20 @@ const Home = ({navigation}) => {
                   const project = await getItems({
                     path: `/gestaoempresa/business/${user.data.businessKey}/projects/${activeSurvey[0].data.projectId}`,
                   });
-                  navigation.navigate('ProjectDetails', {
-                    project: {
-                      key: activeSurvey[0].data.projectId,
-                      data: project,
-                    },
-                  });
+                  const item = {
+                    key: activeSurvey[0].data.projectId,
+                    data: project,
+                  };
+                  if (item.data) {
+                    navigation.navigate('ProjectDetails', {
+                      project: item,
+                    });
+                  } else {
+                    ToastAndroid.show(
+                      'Ocorreu um erro ao abrir as informações, vá até o projeto.',
+                      ToastAndroid.SHORT,
+                    );
+                  }
                 }}>
                 <ImageBackground
                   imageStyle={styles.imageCard}
