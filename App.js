@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {handleClickedNotification} from './source/utils/NotificationHandler';
-import notifee, {EventType} from '@notifee/react-native';
+import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 
 import InAppUpdate from './InAppUpdate';
@@ -25,6 +25,7 @@ const onNotifeeMessageReceived = async message => {
     android: {
       priority: 'high',
       channelId,
+      importance: AndroidImportance.HIGH,
     },
     apns: {
       payload: {
