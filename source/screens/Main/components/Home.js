@@ -461,7 +461,7 @@ const Home = ({navigation}) => {
                 </Text>
                 <Text
                   style={{color: '#000000', fontSize: 15, fontWeight: 'bold'}}>
-                  {getKwp() * 30 * 4.5 * 0.85} kg/ano
+                  {Math.trunc(getKwp() * 30 * 4.5 * 0.85)} kg/ano
                 </Text>
                 <Text style={{color: '#000000'}}>CO² Reduzido</Text>
               </View>
