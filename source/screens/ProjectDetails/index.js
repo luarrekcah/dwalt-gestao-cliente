@@ -26,6 +26,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ImageView from 'react-native-image-viewing';
 import {
   createItem,
+  deleteItem,
   getAllItems,
   getDate,
   getGrowattData,
@@ -36,6 +37,7 @@ import {
 import {getUserAuth} from '../../services/Auth';
 import moment from 'moment/moment';
 import {LineChart} from 'react-native-chart-kit';
+import storage from '@react-native-firebase/storage';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -249,16 +251,38 @@ const ProjectDetails = ({navigation, route}) => {
     ImagePicker.openPicker({
       includeBase64: true,
       multiple: true,
-    }).then(images => {
-      images.forEach(async i => {
+    }).then(async images => {
+      ToastAndroid.show('Enviando fotos, aguarde...', ToastAndroid.LONG);
+      for (let index = 0; index < images.length; index++) {
+        const path = `gestaoempresa/business/${
+          project.data.business
+        }/projects/${project.key}/photos/${new Date().getTime()}-${index}-${
+          project.key
+        }.jpg`;
+        const reference = storage().ref(path);
+        const dataUrl = `data:image/png;base64,${images[index].data}`;
+        await reference.putString(dataUrl, 'data_url');
+        const url = await reference.getDownloadURL();
+
         createItem({
           path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/photos`,
-          params: {base64: 'data:image/png;base64,' + i.data},
+          params: {url, path},
         });
-        loadData();
-      });
+      }
+
+      loadData();
     });
   };
+
+  const deleteImage = item => {
+    console.log(item);
+    storage().ref(item.data.path).delete();
+    deleteItem({
+      path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/photos/${item.key}`,
+    });
+    loadData();
+  };
+
   const dictionary = {
     cod: 'Código do produto',
   };
@@ -401,13 +425,27 @@ const ProjectDetails = ({navigation, route}) => {
               return (
                 <TouchableOpacity
                   key={index}
+                  onLongPress={() => {
+                    Alert.alert(
+                      'Apagar Imagem',
+                      'Tem certeza que deseja apagar essa imagem?',
+                      [
+                        {
+                          text: 'Não',
+                          onPress: () => console.log('Cancel'),
+                          style: 'cancel',
+                        },
+                        {text: 'Sim', onPress: () => deleteImage(item)},
+                      ],
+                    );
+                  }}
                   onPress={() => {
-                    setViewerURI(item.data.base64);
+                    setViewerURI(item.data.url);
                     setIsVisibleImageViewer(true);
                   }}>
                   <ImageBackground
                     style={styles.backgroundImagePhoto}
-                    source={{uri: item.data.base64}}
+                    source={{uri: item.data.url}}
                   />
                 </TouchableOpacity>
               );

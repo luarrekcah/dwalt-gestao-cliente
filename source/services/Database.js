@@ -9,12 +9,28 @@ export const createItem = ({path, params}) => {
   if (!path || !params) {
     return {error: 'Sem path'};
   }
+  if (path.includes('undefined')) {
+    return console.warn('Path recebendo valor indefinido');
+  }
   database().ref(path).push(params);
+};
+
+export const deleteItem = ({path}) => {
+  if (!path) {
+    return console.warn('Sem path ou params!');
+  }
+  if (path.includes('undefined')) {
+    return console.warn('Path recebendo valor indefinido');
+  }
+  database().ref(path).remove();
 };
 
 export const updateItem = ({path, params}) => {
   if (!path || !params) {
     return {error: 'Sem path'};
+  }
+  if (path.includes('undefined')) {
+    return console.warn('Path recebendo valor indefinido');
   }
   database().ref(path).update(params);
 };
@@ -22,6 +38,9 @@ export const updateItem = ({path, params}) => {
 export const getItems = async ({path}) => {
   if (!path) {
     return {error: 'Sem path'};
+  }
+  if (path.includes('undefined')) {
+    return console.warn('Path recebendo valor indefinido');
   }
   const items = await database()
     .ref(path)
@@ -35,6 +54,9 @@ export const getItems = async ({path}) => {
 export const getAllItems = async ({path}) => {
   if (!path) {
     return {error: 'Sem path'};
+  }
+  if (path.includes('undefined')) {
+    return console.warn('Path recebendo valor indefinido');
   }
   const allItems = await database()
     .ref(path)
