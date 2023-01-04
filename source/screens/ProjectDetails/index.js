@@ -38,6 +38,7 @@ import {getUserAuth} from '../../services/Auth';
 import moment from 'moment/moment';
 import {LineChart} from 'react-native-chart-kit';
 import storage from '@react-native-firebase/storage';
+import {Timeline} from 'react-native-just-timeline';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -60,6 +61,7 @@ const ProjectDetails = ({navigation, route}) => {
   const [user, setUser] = React.useState();
   const [chardata, setChartdata] = React.useState();
   const [growatt, setGrowatt] = React.useState();
+  const [historicData, setHistoricData] = React.useState([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -81,6 +83,16 @@ const ProjectDetails = ({navigation, route}) => {
     const pjData = await getItems({
       path: `gestaoempresa/business/${project.data.business}/projects/${project.key}`,
     });
+
+    const historicTimeline = await getAllItems({
+      path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/historic`,
+    });
+
+    const dataTimeline = [];
+    historicTimeline.forEach(i => {
+      dataTimeline.push(i.data);
+    });
+    setHistoricData(dataTimeline);
 
     setProjectData(pjData);
 
@@ -557,9 +569,14 @@ const ProjectDetails = ({navigation, route}) => {
           ) : (
             ''
           )}
-
           <TextSection value={'Histórico do projeto'} />
-          <Text style={{color: '#000000'}}>Em breve</Text>
+          {historicData.length !== 0 ? (
+            <View>
+              <Timeline data={historicData} />
+            </View>
+          ) : (
+            ''
+          )}
           <TextSection value={'Localização'} />
           <TouchableOpacity
             onPress={() => {
