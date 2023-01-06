@@ -39,6 +39,7 @@ import moment from 'moment/moment';
 import {LineChart} from 'react-native-chart-kit';
 import storage from '@react-native-firebase/storage';
 import {Timeline} from 'react-native-just-timeline';
+import {createNotification} from '../../services/Notification';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -235,6 +236,14 @@ const ProjectDetails = ({navigation, route}) => {
           },
         });
         setModalRequestVisible(false);
+        createNotification(
+          'Novo chamado!',
+          `O(a) cliente ${
+            user.data.nomeComp.split(' ')[0]
+          } acabou de realizar um chamado. Abra o app para mais informações`,
+          project.data.business,
+          'staffs',
+        );
         ToastAndroid.show('Sua solicitação foi enviada.', ToastAndroid.SHORT);
       }
     } else {
