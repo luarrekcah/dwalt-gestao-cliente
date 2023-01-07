@@ -34,6 +34,7 @@ import {status} from '../../../utils/dictionary';
 import {LineChart} from 'react-native-chart-kit';
 import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
+import QRCode from 'react-native-qrcode-svg';
 
 const Home = ({navigation}) => {
   const [user, setUser] = React.useState();
@@ -526,6 +527,22 @@ const Home = ({navigation}) => {
                   imageStyle={styles.imageCard}
                   source={require('../../../../assets/home/survey.jpg')}>
                   <View style={styles.projectCard}>
+                    <View
+                      style={{
+                        alignSelf: 'center',
+                        padding: 10,
+                        borderRadius: 10,
+                        margin: 10,
+                        backgroundColor: '#fff',
+                      }}>
+                      <QRCode
+                        logo={require('../../../../assets/icon.png')}
+                        value={JSON.stringify({
+                          type: 'endSurvey',
+                          key: activeSurvey[0].key,
+                        })}
+                      />
+                    </View>
                     <Text
                       style={{
                         alignSelf: 'center',
