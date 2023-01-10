@@ -55,7 +55,12 @@ const SurveyHistoric = ({navigation}) => {
                   </View>
                   <Text style={{marginVertical: 20}}>{item.data.text}</Text>
                   <View style={[styles.row, {marginVertical: 20}]}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        console.log("aa");
+                        navigation.navigate('Review');
+                      }}>
                       <Text style={{color: Colors.whitetheme.primary}}>
                         <Icon
                           name={'star'}

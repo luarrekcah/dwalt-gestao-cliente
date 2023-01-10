@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NetInfo from '@react-native-community/netinfo';
-
+import {LoadingActivity, NotConnected} from './components/Global';
 import Colors from './global/colorScheme';
 
 import {isInitialized} from './services/Welcome';
@@ -17,9 +17,8 @@ import Login from './screens/Login';
 import Main from './screens/Main';
 import ProjectDetails from './screens/ProjectDetails';
 import PdfViewer from './screens/PdfViewer';
-
-import {LoadingActivity, NotConnected} from './components/Global';
 import MyDocuments from './screens/MyDocuments';
+import Review from './screens/Review';
 
 const AppScreens = ({logged, initiated}) => {
   return (
@@ -162,6 +161,25 @@ const AppScreens = ({logged, initiated}) => {
                 Linking.openURL('https://www.dlwalt.com/faq');
               }}>
               <Icon name="help" size={30} color="#fff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="Review"
+        component={Review}
+        options={({navigation, route}) => ({
+          headerStyle: {backgroundColor: Colors.whitetheme.primary},
+          headerTransparent: false,
+          headerTitle: 'Avaliar',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {color: 'white'},
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Icon name="arrow-back" size={30} color="#fff" />
             </TouchableOpacity>
           ),
         })}
