@@ -1,26 +1,31 @@
 import React from 'react';
 import {
+  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
-import {LoadingActivity, TextSection} from '../../global/Components';
-import {getUserData} from '../../services/Database';
+import {LoadingActivity} from '../../global/Components';
+import {getUserData, updateItem} from '../../services/Database';
 import {Rating} from 'react-native-ratings';
 
 import moment from '../../vendors/moment';
 
-const Review = ({navigation}) => {
+const Review = ({navigation, route}) => {
+  const {key} = route.params;
+  console.log(key);
+
   const [user, setUser] = React.useState();
   const [loading, setLoading] = React.useState(true);
 
-  const [Velocidade, setVelocidade] = React.useState('');
-
-  const [Atendimento, setAtendimento] = React.useState('');
+  const [velocidade, setVelocidade] = React.useState(3);
+  const [atendimento, setAtendimento] = React.useState(3);
+  const [resolucao, setResolucao] = React.useState(3);
+  const [sugestao, setSugestao] = React.useState('');
 
   const loadData = async () => {
     setLoading(true);
@@ -48,7 +53,27 @@ const Review = ({navigation}) => {
         setVelocidade(rating);
       },
     },
+    {
+      title: 'Resolução do Problema',
+      onFinishRating: rating => {
+        setResolucao(rating);
+      },
+    },
   ];
+
+  const sendRating = () => {
+    updateItem({
+      path: `/gestaoempresa/business/${user.data.business}/surveys/${key}/rating`,
+      params: {
+        velocidade,
+        atendimento,
+        resolucao,
+        sugestao,
+        reviewedAt: moment().format(),
+      },
+    });
+    navigation.goBack();
+  };
 
   if (loading) {
     return <LoadingActivity />;
@@ -68,6 +93,26 @@ const Review = ({navigation}) => {
               </View>
             );
           })}
+          <TextInput
+            style={styles.textInput}
+            placeholderTextColor={'#9d9d9e'}
+            value={sugestao}
+            multiline={true}
+            placeholder={'Sugestão de melhoria'}
+            onChangeText={text => {
+              setSugestao(text);
+            }}
+          />
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {backgroundColor: Colors.whitetheme.primary},
+            ]}
+            onPress={() => {
+              sendRating();
+            }}>
+            <Text style={{color: '#fff'}}>Enviar</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -95,6 +140,25 @@ const styles = new StyleSheet.create({
   },
   ratingCard: {
     paddingVertical: 10,
+  },
+  textInput: {
+    margin: 10,
+    width: Dimensions.get('window').width - 40,
+    borderColor: '#000000',
+    placeholderTextColor: '#000000',
+    color: '#000000',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 25,
+  },
+
+  button: {
+    backgroundColor: Colors.whitetheme.primary,
+    borderRadius: 30,
+    alignItems: 'center',
+    alignContent: 'center',
+    paddingVertical: 20,
+    marginTop: 20,
   },
 });
 

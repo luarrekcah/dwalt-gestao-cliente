@@ -506,7 +506,7 @@ const Home = ({navigation}) => {
                     ToastAndroid.SHORT,
                   );
                   const project = await getItems({
-                    path: `/gestaoempresa/business/${user.data.businessKey}/projects/${activeSurvey[0].data.projectId}`,
+                    path: `/gestaoempresa/business/${user.data.business}/projects/${activeSurvey[0].data.projectId}`,
                   });
                   const item = {
                     key: activeSurvey[0].data.projectId,

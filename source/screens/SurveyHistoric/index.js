@@ -58,8 +58,7 @@ const SurveyHistoric = ({navigation}) => {
                     <TouchableOpacity
                       style={styles.button}
                       onPress={() => {
-                        console.log("aa");
-                        navigation.navigate('Review');
+                        navigation.navigate('Review', {key: item.key});
                       }}>
                       <Text style={{color: Colors.whitetheme.primary}}>
                         <Icon
