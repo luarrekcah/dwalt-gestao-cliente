@@ -3,6 +3,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -54,24 +55,46 @@ const SurveyHistoric = ({navigation}) => {
                     </View>
                   </View>
                   <Text style={{marginVertical: 20}}>{item.data.text}</Text>
-                  <View style={[styles.row, {marginVertical: 20}]}>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                        navigation.navigate('Review', {key: item.key});
-                      }}>
-                      <Text style={{color: Colors.whitetheme.primary}}>
-                        <Icon
-                          name={'star'}
-                          size={20}
-                          color={Colors.whitetheme.primary}
-                        />
+                  {item.data.rating ? (
+                    <View style={[styles.row, {marginVertical: 20}]}>
+                      <Text style={{fontWeight: 'bold'}}>
+                        Nota média:{' '}
+                        {Math.trunc(
+                          (item.data.rating.atendimento +
+                            item.data.rating.resolucao +
+                            item.data.rating.velocidade) /
+                            3,
+                        )}
                       </Text>
-                      <Text style={{color: Colors.whitetheme.primary}}>
-                        Avaliar
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  ) : (
+                    <View style={[styles.row, {marginVertical: 20}]}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                          if (item.data.rating) {
+                            return ToastAndroid.show(
+                              'Você já avaliou esse chamado.',
+                              ToastAndroid.SHORT,
+                            );
+                          } else {
+                            navigation.navigate('Review', {key: item.key});
+                          }
+                        }}>
+                        <Text style={{color: Colors.whitetheme.primary}}>
+                          <Icon
+                            name={'star'}
+                            size={20}
+                            color={Colors.whitetheme.primary}
+                          />
+                        </Text>
+                        <Text style={{color: Colors.whitetheme.primary}}>
+                          {item.data.rating ? 'Já avaliado' : 'Avaliar'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
                   <Text
                     style={{
                       color: '#fff',
@@ -122,6 +145,7 @@ const styles = new StyleSheet.create({
   button: {
     backgroundColor: '#fff',
     padding: 20,
+    width: '100%',
     borderRadius: 10,
     alignContent: 'center',
     alignItems: 'center',
