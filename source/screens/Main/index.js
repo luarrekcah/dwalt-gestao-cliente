@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
@@ -10,6 +9,7 @@ import Home from './components/Home';
 import Business from '../Business';
 import User from '../User';
 import GrowattServer from '../GrowattServer';
+import SurveyHistoric from '../SurveyHistoric';
 
 const Tab = AnimatedTabBarNavigator();
 
@@ -37,12 +37,15 @@ const Main = () => {
             iconName = focused ? 'people' : 'people-outline';
           } else if (route.name === 'Sistema') {
             iconName = focused ? 'analytics' : 'analytics-outline';
+          } else if (route.name === 'Histórico') {
+            iconName = focused ? 'albums' : 'albums-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
       <Tab.Screen name="Empresa" component={Business} />
+      <Tab.Screen name="Histórico" component={SurveyHistoric} />
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Sistema" component={GrowattServer} />
       <Tab.Screen name="Usuário" component={User} />
