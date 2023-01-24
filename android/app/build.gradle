@@ -152,7 +152,7 @@ android {
         applicationId "com.dlwalt.cliente"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 17
+        versionCode 18
         //./gradlew bundleRelease
         versionName getVersionFromNpm()
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()

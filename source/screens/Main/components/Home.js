@@ -664,7 +664,9 @@ const Home = ({navigation}) => {
                               {item.data.category.toUpperCase()}
                             </Text>
                           </View>
-                          {item.data.username_growatt && growatt ? (
+                          {item.data.username_growatt &&
+                          growatt &&
+                          getGrowattProject(item.data.username_growatt) ? (
                             <>
                               <Text
                                 style={{
