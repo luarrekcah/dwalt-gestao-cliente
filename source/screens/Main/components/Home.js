@@ -83,7 +83,6 @@ const Home = ({navigation}) => {
       await loadData();
     });
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation, user]);
 
   const getKwp = () => {
@@ -435,7 +434,7 @@ const Home = ({navigation}) => {
                 iconSize={40}
               />
               <MiniCard
-                content={[parseInt(getKwp() * 30 * 4.5), 'kWh/mês']}
+                content={[parseInt(getKwp() * 30 * 4.5, 10), 'kWh/mês']}
                 iconName="flash"
                 iconSize={40}
               />
@@ -646,6 +645,8 @@ const Home = ({navigation}) => {
                             flexDirection: 'row',
                             flexWrap: 'wrap',
                             justifyContent: 'space-between',
+                            alignContent: 'center',
+                            alignItems: 'center',
                           }}>
                           <View
                             style={{
@@ -687,23 +688,30 @@ const Home = ({navigation}) => {
                                   ].title
                                 }
                               </Text>
-                              <Text
-                                style={{
-                                  fontSize: 20,
-                                  color: '#fff',
-                                  fontWeight: 'bold',
-                                }}>
-                                <Icon
-                                  name="battery-charging-full"
-                                  size={20}
-                                  color="#fff"
-                                />
-                                {
-                                  getGrowattProject(item.data.username_growatt)
-                                    .total_energy
-                                }
-                                kW
-                              </Text>
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    color: '#fff',
+                                    fontWeight: 'bold',
+                                  }}>
+                                  Geração hoje
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 20,
+                                    color: '#fff',
+                                    fontWeight: 'bold',
+                                  }}>
+                                  <Icon
+                                    name="battery-charging-full"
+                                    size={20}
+                                    color="#fff"
+                                  />
+                                  {item.data.overview.data.data.today_energy}
+                                  kW
+                                </Text>
+                              </View>
                             </>
                           ) : (
                             ''
