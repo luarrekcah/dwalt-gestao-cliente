@@ -155,40 +155,12 @@ const ProjectDetails = ({navigation, route}) => {
     setLoading(false);
   };
 
-  const statusDict = {
-    0: {
-      title: 'Desconectado',
-      color: '#a19f9f',
-    },
-    1: {
-      title: 'Normal',
-      color: '#13fc03',
-    },
-    2: {
-      title: 'Aguardando',
-      color: '#13fc03',
-    },
-    3: {
-      title: 'Falha',
-      color: '#fa3916',
-    },
-    4: {
-      title: 'Offline',
-      color: '#a19f9f',
-    },
-  };
-
   const getGrowattProject = plantName => {
-    const plantNameOK = plantName.replaceAll(' ', '');
-    if (growatt && (plantName !== undefined || plantName !== '')) {
+    if (growatt) {
       const finded = growatt.plantList.data.data.plants.find(
-        g => g.name === plantNameOK,
+        g => g.name === plantName,
       );
-      if (finded) {
-        return finded;
-      } else {
-        return [];
-      }
+      return finded;
     } else {
       return [];
     }
@@ -313,6 +285,29 @@ const ProjectDetails = ({navigation, route}) => {
     dictionary[key],
   ]);
 
+  const statusDict = {
+    0: {
+      title: 'Desconectado',
+      color: '#a19f9f',
+    },
+    1: {
+      title: 'Normal',
+      color: '#13fc03',
+    },
+    2: {
+      title: 'Aguardando',
+      color: '#13fc03',
+    },
+    3: {
+      title: 'Falha',
+      color: '#fa3916',
+    },
+    4: {
+      title: 'Offline',
+      color: '#a19f9f',
+    },
+  };
+
   if (loading) {
     return <LoadingActivity />;
   } else {
@@ -380,7 +375,9 @@ const ProjectDetails = ({navigation, route}) => {
                   {project.data.category.toUpperCase()}
                 </Text>
               </View>
-              {project.data.overview ? (
+              {project.data.username_growatt &&
+              growatt &&
+              getGrowattProject(project.data.username_growatt) ? (
                 <>
                   <Text
                     style={{
@@ -398,19 +395,26 @@ const ProjectDetails = ({navigation, route}) => {
                       ].title
                     }
                   </Text>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      color: '#fff',
-                      fontWeight: 'bold',
-                    }}>
-                    <Icon name="battery" size={20} color="#fff" />
-                    {
-                      getGrowattProject(project.data.username_growatt)
-                        .total_energy
-                    }
-                    kW
-                  </Text>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: '#fff',
+                        fontWeight: 'bold',
+                      }}>
+                      Geração hoje
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        color: '#fff',
+                        fontWeight: 'bold',
+                      }}>
+                      <Icon name="battery-charging" size={20} color="#fff" />
+                      {project.data.overview.data.data.today_energy}
+                      kW
+                    </Text>
+                  </View>
                 </>
               ) : (
                 ''
@@ -498,7 +502,7 @@ const ProjectDetails = ({navigation, route}) => {
                     {dictionary[`${item[0]}`]}
                     <Icon
                       name={
-                        projectData[`${item[0]}`] !== '' ? 'check' : 'alert'
+                        projectData[`${item[0]}`] !== '' ? 'check' : 'alert-box'
                       }
                       size={15}
                       color={'#fff'}
