@@ -118,6 +118,22 @@ export const getSurveyData = async () => {
   return onlyuser;
 };
 
+export const getComplaintData = async () => {
+  const userLocal = await getUserAuth();
+  const userCloud = await getItems({
+    path: `/gestaoempresa/business/${userLocal.businessKey}/customers/${userLocal.userKey}`,
+  });
+  const complaints = await getAllItems({
+    path: `/gestaoempresa/business/${userLocal.businessKey}/complaints`,
+  });
+  const onlyuser = complaints.filter(
+    i =>
+      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+      userCloud.cpf.replaceAll('-', '').replaceAll('.', ''),
+  );
+  return onlyuser;
+};
+
 export const getProjectsData = async () => {
   const userLocal = await getUserAuth();
   const projects = await getAllItems({

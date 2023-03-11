@@ -10,19 +10,25 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
 import {LoadingActivity, TextSection} from '../../global/Components';
-import {getSurveyData, getUserData} from '../../services/Database';
+import {
+  getComplaintData,
+  getSurveyData,
+  getUserData,
+} from '../../services/Database';
 
 import moment from '../../vendors/moment';
 
 const SurveyHistoric = ({navigation}) => {
   const [user, setUser] = React.useState();
   const [surveys, setSurveys] = React.useState([]);
+  const [complaints, setComplaints] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   const loadData = async () => {
     setLoading(true);
     setUser(await getUserData());
     setSurveys(await getSurveyData());
+    setComplaints(await getComplaintData());
     setLoading(false);
   };
 
@@ -110,6 +116,52 @@ const SurveyHistoric = ({navigation}) => {
             <View style={{alignContent: 'center', alignItems: 'center'}}>
               <Text style={{color: '#000000'}}>
                 Não há chamados finalizados para mostrar no histórico.
+              </Text>
+            </View>
+          ) : (
+            ''
+          )}
+          <TextSection value={'Reclamações'} />
+          {complaints.map(item => {
+            return (
+              <View
+                style={[
+                  styles.card,
+                  {
+                    backgroundColor: item.data.reply
+                      ? Colors.whitetheme.success
+                      : Colors.whitetheme.warning,
+                  },
+                ]}
+                key={item.key}>
+                <View style={styles.row}>
+                  <Text style={{color: '#fff', fontWeight: 'bold'}}>
+                    {item.data.title}
+                  </Text>
+                </View>
+                <Text style={{marginVertical: 20}}>{item.data.text}</Text>
+                <Text style={{fontWeight: 'bold', color: '#fff'}}>
+                  Resposta da empresa:
+                </Text>
+                <Text style={{marginBottom: 20}}>
+                  {item.data.reply
+                    ? item.data.reply
+                    : 'Sem resposta até o momento.'}
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                  }}>
+                  <Icon name={'clock'} size={20} color={'#fff'} />{' '}
+                  {moment(item.data.createdAt).fromNow()}
+                </Text>
+              </View>
+            );
+          })}
+          {complaints.length === 0 ? (
+            <View style={{alignContent: 'center', alignItems: 'center'}}>
+              <Text style={{color: '#000000'}}>
+                Não há reclamações para mostrar no histórico.
               </Text>
             </View>
           ) : (
