@@ -12,7 +12,6 @@ import {
   TextInput,
   Alert,
   ToastAndroid,
-  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
@@ -197,10 +196,12 @@ const ProjectDetails = ({navigation, route}) => {
         createItem({
           path: `gestaoempresa/business/${project.data.business}/surveys`,
           params: {
+            type: 'cliente',
             accepted: false,
             finished: false,
             createdAt: getDate(moment),
             owner: user.data.cpf,
+            ownerId: user.key,
             status: 'Aguardando empresa aceitar o chamado.',
             projectId: project.key,
             title: title,
@@ -224,6 +225,7 @@ const ProjectDetails = ({navigation, route}) => {
         params: {
           createdAt: getDate(moment),
           owner: user.data.cpf,
+          ownerId: user.key,
           projectId: project.key,
           title: title,
           text: description,
@@ -357,6 +359,8 @@ const ProjectDetails = ({navigation, route}) => {
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 justifyContent: 'space-between',
+                alignContent: 'center',
+                alignItems: 'center',
               }}>
               <View
                 style={{
@@ -444,6 +448,21 @@ const ProjectDetails = ({navigation, route}) => {
               ? 'Sem nome de usuário growatt'
               : project.data.username_growatt}
           </Text>
+
+          {project.data.overview ? (
+            <View>
+              <Text style={[styles.bottomStatus, {color: '#000000'}]}>
+                <Icon name="update" size={20} color="#000000" />{' '}
+                {project.data.overview.data.data.last_update_time === '' ||
+                project.data.overview.data.data.last_update_time === undefined
+                  ? 'Sem nome de usuário growatt'
+                  : project.data.overview.data.data.last_update_time}
+              </Text>
+            </View>
+          ) : (
+            ''
+          )}
+
           <TextSection value={'Fotos'} />
           <ScrollView horizontal>
             {allMedia.map((item, index) => {
@@ -479,39 +498,6 @@ const ProjectDetails = ({navigation, route}) => {
               <Icon name="plus" size={40} color="#fff" />
             </TouchableOpacity>
           </ScrollView>
-          <TextSection value={'Dados Salvos'} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {dictToArray.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    setModalVisible(true);
-                    setModalData({
-                      title: dictionary[`${item[0]}`],
-                      key: item[0],
-                    });
-                  }}>
-                  <Text
-                    style={[
-                      styles.collectedCard,
-                      projectData[`${item[0]}`] === ''
-                        ? {backgroundColor: Colors.whitetheme.warning}
-                        : '',
-                    ]}>
-                    {dictionary[`${item[0]}`]}
-                    <Icon
-                      name={
-                        projectData[`${item[0]}`] !== '' ? 'check' : 'alert-box'
-                      }
-                      size={15}
-                      color={'#fff'}
-                    />
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
           <TextSection value={'Documentos'} />
           <ScrollView horizontal>
             {allDocuments.length !== 0 ? (
@@ -538,7 +524,7 @@ const ProjectDetails = ({navigation, route}) => {
               </Text>
             )}
           </ScrollView>
-          {project.data.overview ? (
+          {project.data.month_power && chardata ? (
             <>
               <TextSection value={'Histórico de geração'} />
               <LineChart
@@ -582,11 +568,14 @@ const ProjectDetails = ({navigation, route}) => {
           ) : (
             ''
           )}
-          <TextSection value={'Histórico do projeto'} />
+
           {historicData.length !== 0 ? (
-            <View>
-              <Timeline data={historicData} />
-            </View>
+            <>
+              <TextSection value={'Histórico do projeto'} />
+              <View>
+                <Timeline data={historicData} />
+              </View>
+            </>
           ) : (
             ''
           )}
