@@ -128,7 +128,7 @@ const SurveyHistoric = ({navigation}) => {
                 style={[
                   styles.card,
                   {
-                    backgroundColor: item.data.reply
+                    backgroundColor: item.data.businessReply
                       ? Colors.whitetheme.success
                       : Colors.whitetheme.warning,
                   },
@@ -144,8 +144,8 @@ const SurveyHistoric = ({navigation}) => {
                   Resposta da empresa:
                 </Text>
                 <Text style={{marginBottom: 20}}>
-                  {item.data.reply
-                    ? item.data.reply
+                  {item.data.businessReply
+                    ? item.data.businessReply
                     : 'Sem resposta até o momento.'}
                 </Text>
                 <Text

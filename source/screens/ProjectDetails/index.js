@@ -381,6 +381,7 @@ const ProjectDetails = ({navigation, route}) => {
               </View>
               {project.data.username_growatt &&
               growatt &&
+              project.data.overview &&
               getGrowattProject(project.data.username_growatt) ? (
                 <>
                   <Text

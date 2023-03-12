@@ -666,6 +666,7 @@ const Home = ({navigation}) => {
                             </Text>
                           </View>
                           {item.data.username_growatt &&
+                          item.data.overview &&
                           growatt &&
                           getGrowattProject(item.data.username_growatt) ? (
                             <>
