@@ -59,11 +59,23 @@ const Login = ({navigation}) => {
       const customers = await getAllItems({
         path: `gestaoempresa/business/${businessData.key}/customers`,
       });
-      const foundCustomer = customers.find(
-        i =>
+      const foundCustomer = customers.find(i => {
+        if (
+          i.data.cpf &&
           i.data.cpf.replaceAll('-', '').replaceAll('.', '') ===
-          cpfValue.replaceAll('-', '').replaceAll('.', ''),
-      );
+            cpfValue.replaceAll('-', '').replaceAll('.', '')
+        ) {
+          return i;
+        }
+
+        if (
+          i.data.cnpj &&
+          i.data.cnpj.replaceAll('-', '').replaceAll('.', '') ===
+            cpfValue.replaceAll('-', '').replaceAll('.', '')
+        ) {
+          return i;
+        }
+      });
       if (foundCustomer) {
         if (foundCustomer.data.password === passwordValue) {
           const auth = {
