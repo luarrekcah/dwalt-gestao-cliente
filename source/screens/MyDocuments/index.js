@@ -129,7 +129,7 @@ const MyDocuments = ({navigation}) => {
               setDocumentValue(text);
             }}
           />
-          {user.data.cpf ? (
+          {user && user.data.cpf ? (
             <>
               <Text style={styles.items}>RG</Text>
               <TextInput
@@ -207,7 +207,7 @@ const MyDocuments = ({navigation}) => {
             }}
           />
 
-          {user.data.cpf ? (
+          {user && user.data.cpf ? (
             <>
               <Text style={styles.items}>Profissão</Text>
               <TextInput
