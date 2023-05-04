@@ -17,11 +17,23 @@ import messaging from '@react-native-firebase/messaging';
 import {TextInputMask} from 'react-native-masked-text';
 
 const Login = ({navigation}) => {
-  const [cpfValue, setCpfValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
   const [businessEmail, setBusinessEmail] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [businessData, setBusinessData] = React.useState(null);
+
+  const [documentValue, setDocumentValue] = React.useState('');
+  const [documentType, setDocumentType] = React.useState('cpf');
+
+  const handleDocumentChange = text => {
+    setDocumentValue(text);
+    // verifica se o valor digitado corresponde a um CPF ou CNPJ
+    if (text.length === 11 && documentType !== 'cpf') {
+      setDocumentType('cpf');
+    } else if (text.length === 14 && documentType !== 'cnpj') {
+      setDocumentType('cnpj');
+    }
+  };
 
   const verifyBusiness = async () => {
     if (!businessEmail.includes('@')) {
@@ -41,11 +53,11 @@ const Login = ({navigation}) => {
 
   const login = async () => {
     setLoading(true);
-    if (cpfValue === '' || passwordValue === '' || businessEmail === '') {
+    if (documentValue === '' || passwordValue === '' || businessEmail === '') {
       setLoading(false);
       return ToastAndroid.show('Preencha os dados', ToastAndroid.SHORT);
     }
-    if (cpfValue.length <= 10) {
+    if (documentValue.length <= 10) {
       setLoading(false);
       return ToastAndroid.show('Preencha os dados', ToastAndroid.SHORT);
     }
@@ -63,7 +75,7 @@ const Login = ({navigation}) => {
         if (
           i.data.cpf &&
           i.data.cpf.replaceAll('-', '').replaceAll('.', '') ===
-            cpfValue.replaceAll('-', '').replaceAll('.', '')
+            documentValue.replaceAll('-', '').replaceAll('.', '')
         ) {
           return i;
         }
@@ -71,7 +83,7 @@ const Login = ({navigation}) => {
         if (
           i.data.cnpj &&
           i.data.cnpj.replaceAll('-', '').replaceAll('.', '') ===
-            cpfValue.replaceAll('-', '').replaceAll('.', '')
+            documentValue.replaceAll('-', '').replaceAll('.', '')
         ) {
           return i;
         }
@@ -135,13 +147,11 @@ const Login = ({navigation}) => {
         />
         <TextInputMask
           style={styles.textInput}
-          placeholder="CPF"
+          placeholder={'CPF/CNPJ'}
           placeholderTextColor="#fff"
-          type={'cpf'}
-          value={cpfValue}
-          onChangeText={text => {
-            setCpfValue(text);
-          }}
+          type={documentType}
+          value={documentValue}
+          onChangeText={handleDocumentChange}
         />
         <TextInput
           style={styles.textInput}

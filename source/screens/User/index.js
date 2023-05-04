@@ -29,9 +29,18 @@ const Business = ({navigation}) => {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <Text style={styles.bussinessName}>{user.data.nomeComp}</Text>
+          {user.data.cpf ? (
+            <Text style={styles.bussinessName}>{user.data.nomeComp}</Text>
+          ) : (
+            <Text style={styles.bussinessName}>{user.data.nomeFantasia}</Text>
+          )}
+
           <View style={styles.emailBackground}>
-            <Text style={styles.email}>CPF: {user.data.cpf}</Text>
+            {user.data.cpf ? (
+              <Text style={styles.email}>CPF: {user.data.cpf}</Text>
+            ) : (
+              <Text style={styles.email}>CNPJ: {user.data.cnpj}</Text>
+            )}
           </View>
           <TextSection value="Conta" />
           <Button

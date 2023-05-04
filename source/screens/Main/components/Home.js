@@ -254,7 +254,12 @@ const Home = ({navigation}) => {
           <View style={styles.headerDetail}>
             <Text style={styles.welcome}>
               Bem vindo(a)
-              {user === undefined ? '' : ' ' + user.data.nomeComp.split(' ')[0]}
+              {user === undefined
+                ? ''
+                : ' ' +
+                  (user.data.cpf
+                    ? user.data.nomeComp.split(' ')[0]
+                    : user.data.nomeFantasia.split(' ')[0])}
               !
             </Text>
             <Text style={styles.linkedOn}>

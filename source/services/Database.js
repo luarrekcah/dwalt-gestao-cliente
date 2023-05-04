@@ -110,11 +110,23 @@ export const getSurveyData = async () => {
   const surveys = await getAllItems({
     path: `/gestaoempresa/business/${userLocal.businessKey}/surveys`,
   });
-  const onlyuser = surveys.filter(
-    i =>
+  const onlyuser = surveys.filter(i => {
+    if (
+      userCloud.cpf &&
       i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
-      userCloud.cpf.replaceAll('-', '').replaceAll('.', ''),
-  );
+        userCloud.cpf.replaceAll('-', '').replaceAll('.', '')
+    ) {
+      return i;
+    }
+
+    if (
+      userCloud.cnpj &&
+      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+        userCloud.cnpj.replaceAll('-', '').replaceAll('.', '')
+    ) {
+      return i;
+    }
+  });
   return onlyuser;
 };
 
@@ -126,11 +138,23 @@ export const getComplaintData = async () => {
   const complaints = await getAllItems({
     path: `/gestaoempresa/business/${userLocal.businessKey}/complaints`,
   });
-  const onlyuser = complaints.filter(
-    i =>
+  const onlyuser = complaints.filter(i => {
+    if (
+      userCloud.cpf &&
       i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
-      userCloud.cpf.replaceAll('-', '').replaceAll('.', ''),
-  );
+        userCloud.cpf.replaceAll('-', '').replaceAll('.', '')
+    ) {
+      return i;
+    }
+
+    if (
+      userCloud.cnpj &&
+      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+        userCloud.cnpj.replaceAll('-', '').replaceAll('.', '')
+    ) {
+      return i;
+    }
+  });
   return onlyuser;
 };
 
