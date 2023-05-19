@@ -582,6 +582,9 @@ const Home = ({navigation}) => {
                       Solicitado{' '}
                       {moment(activeSurvey[0].data.createdAt).fromNow()}
                     </Text>
+                    <Text style={{alignSelf: 'center', color: '#c9c9c9'}}>
+                      Atendimento em até 7 dias úteis
+                    </Text>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
