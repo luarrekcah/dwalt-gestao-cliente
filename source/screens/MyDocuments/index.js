@@ -13,9 +13,10 @@ import {TextInputMask} from 'react-native-masked-text';
 import Colors from '../../global/colorScheme';
 import {LoadingActivity, SimpleButton} from '../../global/Components';
 import {getUserData, updateItem} from '../../services/Database';
+import {useUser} from '../../hooks/UserContext';
 
 const MyDocuments = ({navigation}) => {
-  const [user, setUser] = React.useState();
+  const {user, setUser} = useUser();
   const [nomeValue, setNomeValue] = React.useState('');
   const [documentValue, setDocumentValue] = React.useState('');
   const [documentType, setDocumentType] = React.useState('cpf');
@@ -34,22 +35,19 @@ const MyDocuments = ({navigation}) => {
 
   const loadData = async () => {
     setLoading(true);
-    const userdata = await getUserData();
-    console.log(userdata);
-    setUser(userdata);
-    setDocumentType(userdata.data.cpf ? 'cpf' : 'cnpj');
-    setNomeValue(userdata.data.nomeComp || userdata.data.nomeFantasia);
-    setDocumentValue(userdata.data.cpf || userdata.data.cnpj);
-    setRgValue(userdata.data.rg);
-    setDateValue(userdata.data.dataNasc);
-    setMaeValue(userdata.data.nomeMae);
-    setEmailValue(userdata.data.email);
-    setCellValue(userdata.data.celular);
-    setEndValue(userdata.data.endCompleto);
-    setProfValue(userdata.data.profissao);
-    setOcupValue(userdata.data.ocupacao);
-    setRendaValue(userdata.data.renda);
-    setPatriValue(userdata.data.patrimonio);
+    setDocumentType(user.data.cpf ? 'cpf' : 'cnpj');
+    setNomeValue(user.data.nomeComp || user.data.nomeFantasia);
+    setDocumentValue(user.data.cpf || user.data.cnpj);
+    setRgValue(user.data.rg);
+    setDateValue(user.data.dataNasc);
+    setMaeValue(user.data.nomeMae);
+    setEmailValue(user.data.email);
+    setCellValue(user.data.celular);
+    setEndValue(user.data.endCompleto);
+    setProfValue(user.data.profissao);
+    setOcupValue(user.data.ocupacao);
+    setRendaValue(user.data.renda);
+    setPatriValue(user.data.patrimonio);
     setLoading(false);
   };
 
@@ -82,6 +80,8 @@ const MyDocuments = ({navigation}) => {
         patrimonio: patriValue,
       };
     }
+
+    setUser(newDocs);
 
     updateItem({
       path: `/gestaoempresa/business/${user.data.business}/customers/${user.key}`,

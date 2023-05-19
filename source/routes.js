@@ -20,6 +20,9 @@ import PdfViewer from './screens/PdfViewer';
 import MyDocuments from './screens/MyDocuments';
 import Review from './screens/Review';
 
+import {UserProvider} from './hooks/UserContext';
+import {BusinessProvider} from './hooks/BusinessContext';
+
 const AppScreens = ({logged, initiated}) => {
   return (
     <Stack.Navigator
@@ -224,7 +227,11 @@ const Routes = () => {
 
   return (
     <NavigationContainer>
-      <AppScreens logged={logged} initiated={initiated} />
+      <UserProvider>
+        <BusinessProvider>
+          <AppScreens logged={logged} initiated={initiated} />
+        </BusinessProvider>
+      </UserProvider>
     </NavigationContainer>
   );
 };

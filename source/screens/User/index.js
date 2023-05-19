@@ -1,29 +1,19 @@
 import React from 'react';
-import {Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
-import Colors from '../../global/colorScheme';
+import {Linking, ScrollView, Text, View} from 'react-native';
 import {Button, LoadingActivity, TextSection} from '../../global/Components';
-import {getUserData} from '../../services/Database';
 import {onLogoutPress} from '../../services/Auth';
 import {version} from '../../../package.json';
 
+import {useUserData} from '../../hooks/useUserData';
+
+import styles from './styles';
+
+import {useUser} from '../../hooks/UserContext';
+
 const Business = ({navigation}) => {
-  const [user, setUser] = React.useState();
-  const [loading, setLoading] = React.useState(true);
+  const {user, setUser} = useUser();
 
-  const loadData = async () => {
-    setLoading(true);
-    setUser(await getUserData());
-    setLoading(false);
-  };
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadData();
-    });
-    return unsubscribe;
-  }, [navigation]);
-
-  if (loading) {
+  if (!user) {
     return <LoadingActivity />;
   } else {
     return (
@@ -85,39 +75,5 @@ const Business = ({navigation}) => {
     );
   }
 };
-
-const styles = new StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  bussinessLogo: {
-    width: 200,
-    height: 200,
-    alignSelf: 'center',
-    margin: 30,
-    borderRadius: 30,
-  },
-  bussinessName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    color: Colors.whitetheme.primary,
-  },
-  bussinessDesc: {
-    fontSize: 15,
-  },
-  emailBackground: {
-    backgroundColor: Colors.whitetheme.gray,
-    borderRadius: 20,
-    width: 300,
-    alignSelf: 'center',
-  },
-  email: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    color: '#fff',
-  },
-});
 
 export default Business;

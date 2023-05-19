@@ -35,11 +35,13 @@ import {LineChart} from 'react-native-chart-kit';
 import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import QRCode from 'react-native-qrcode-svg';
+import {useUser} from '../../../hooks/UserContext';
+import {useBusiness} from '../../../hooks/BusinessContext';
 
 const Home = ({navigation}) => {
-  const [user, setUser] = React.useState();
+  const {user, setUser} = useUser();
+  const {business, setBusiness} = useBusiness();
   const [projects, setProjects] = React.useState([]);
-  const [business, setBusiness] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [activeSurvey, setActiveSurvey] = React.useState([]);
   const [irradiation, setIrradiation] = React.useState([]);
@@ -48,7 +50,8 @@ const Home = ({navigation}) => {
   const loadData = async () => {
     setLoading(true);
     setGrowatt(await getGrowattData());
-    setUser(await getUserData());
+    const userData = await getUserData();
+    setUser(userData);
     const surveys = await getSurveyData();
     const businesss = await getBusinessData();
     const actSurvey = surveys.filter(i => !i.data.finished);
@@ -83,7 +86,7 @@ const Home = ({navigation}) => {
       await loadData();
     });
     return unsubscribe;
-  }, [navigation, user]);
+  }, [navigation]);
 
   const getKwp = () => {
     let kwpTotal = 0;

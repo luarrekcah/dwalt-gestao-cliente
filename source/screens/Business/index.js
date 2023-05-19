@@ -2,26 +2,12 @@ import React from 'react';
 import {Text, View, Image, StyleSheet, ScrollView} from 'react-native';
 import Colors from '../../global/colorScheme';
 import {LoadingActivity, TextSection} from '../../global/Components';
-import {getBusinessData} from '../../services/Database';
+import {useBusiness} from '../../hooks/BusinessContext';
 
 const Business = ({navigation}) => {
-  const [business, setBusiness] = React.useState();
-  const [loading, setLoading] = React.useState(true);
+  const {business, setBusiness} = useBusiness();
 
-  const loadData = async () => {
-    setLoading(true);
-    setBusiness(await getBusinessData());
-    setLoading(false);
-  };
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadData();
-    });
-    return unsubscribe;
-  }, [navigation]);
-
-  if (loading) {
+  if (!business) {
     return <LoadingActivity />;
   } else {
     return (

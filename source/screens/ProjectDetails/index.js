@@ -39,6 +39,7 @@ import {LineChart} from 'react-native-chart-kit';
 import storage from '@react-native-firebase/storage';
 import {Timeline} from 'react-native-just-timeline';
 import {createNotification} from '../../services/Notification';
+import {useUser} from '../../hooks/UserContext';
 //import MapView from 'react-native-maps'; desinstalar
 
 const ProjectDetails = ({navigation, route}) => {
@@ -58,7 +59,7 @@ const ProjectDetails = ({navigation, route}) => {
   const [loadingModal, setLoadingModal] = React.useState(false);
   const [typeRequest, setTypeRequest] = React.useState('');
   const [modalRequestVisible, setModalRequestVisible] = React.useState(false);
-  const [user, setUser] = React.useState();
+  const {user, setUser} = useUser();
   const [chardata, setChartdata] = React.useState();
   const [growatt, setGrowatt] = React.useState();
   const [historicData, setHistoricData] = React.useState([]);
@@ -95,8 +96,6 @@ const ProjectDetails = ({navigation, route}) => {
     setHistoricData(dataTimeline);
 
     setProjectData(pjData);
-
-    setUser(await getUserData());
 
     const power = [],
       labelsMonths = [];
