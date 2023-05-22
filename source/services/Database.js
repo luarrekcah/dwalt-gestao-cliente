@@ -113,7 +113,7 @@ export const getSurveyData = async () => {
   const onlyuser = surveys.filter(i => {
     if (
       userCloud.cpf &&
-      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+      i.data.customer.document.replaceAll('-', '').replaceAll('.', '') ===
         userCloud.cpf.replaceAll('-', '').replaceAll('.', '')
     ) {
       return i;
@@ -121,7 +121,7 @@ export const getSurveyData = async () => {
 
     if (
       userCloud.cnpj &&
-      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+      i.data.customer.document.replaceAll('-', '').replaceAll('.', '') ===
         userCloud.cnpj.replaceAll('-', '').replaceAll('.', '')
     ) {
       return i;
@@ -141,7 +141,7 @@ export const getComplaintData = async () => {
   const onlyuser = complaints.filter(i => {
     if (
       userCloud.cpf &&
-      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+      i.data.customer.document.replaceAll('-', '').replaceAll('.', '') ===
         userCloud.cpf.replaceAll('-', '').replaceAll('.', '')
     ) {
       return i;
@@ -149,7 +149,7 @@ export const getComplaintData = async () => {
 
     if (
       userCloud.cnpj &&
-      i.data.owner.replaceAll('-', '').replaceAll('.', '') ===
+      i.data.customer.document.replaceAll('-', '').replaceAll('.', '') ===
         userCloud.cnpj.replaceAll('-', '').replaceAll('.', '')
     ) {
       return i;

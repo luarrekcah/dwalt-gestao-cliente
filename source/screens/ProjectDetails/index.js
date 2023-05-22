@@ -30,7 +30,6 @@ import {
   getDate,
   getGrowattData,
   getItems,
-  getUserData,
   updateItem,
 } from '../../services/Database';
 import {getUserAuth} from '../../services/Auth';
@@ -41,6 +40,7 @@ import {Timeline} from 'react-native-just-timeline';
 import {createNotification} from '../../services/Notification';
 import {useUser} from '../../hooks/UserContext';
 //import MapView from 'react-native-maps'; desinstalar
+import {Dimensions} from 'react-native';
 
 const ProjectDetails = ({navigation, route}) => {
   const {project} = route.params;
@@ -179,7 +179,7 @@ const ProjectDetails = ({navigation, route}) => {
     });
 
     const check = await allSurveys.filter(
-      i => i.data.owner === user.data.cpf && !i.data.finished,
+      i => i.data.customer.document === user.data.cpf && !i.data.finished,
     );
 
     if (typeRequest !== 'complaint') {
@@ -199,10 +199,16 @@ const ProjectDetails = ({navigation, route}) => {
             accepted: false,
             finished: false,
             createdAt: getDate(moment),
-            owner: user.data.cpf,
-            ownerId: user.key,
+            project: {
+              id: project.key,
+              name: project.data.apelidoProjeto,
+            },
+            customer: {
+              name: user.nomeComp ? user.nomeComp : user.nomefantasia,
+              document: user.cpf ? user.cpf : user.cnpj,
+              id: user.key,
+            },
             status: 'Aguardando empresa aceitar o chamado.',
-            projectId: project.key,
             title: title,
             text: description,
           },
@@ -211,7 +217,8 @@ const ProjectDetails = ({navigation, route}) => {
         createNotification(
           'Novo chamado!',
           `O(a) cliente ${
-            user.data.nomeComp.split(' ')[0]
+            user.data.nomeComp.split(' ')[0] ||
+            user.data.nomeFantasia.split(' ')[0]
           } acabou de realizar um chamado. Abra o app para mais informações`,
           project.data.business,
           'staffs',
@@ -223,11 +230,17 @@ const ProjectDetails = ({navigation, route}) => {
         path: `gestaoempresa/business/${project.data.business}/complaints`,
         params: {
           createdAt: getDate(moment),
-          owner: user.data.cpf,
-          ownerId: user.key,
-          projectId: project.key,
           title: title,
           text: description,
+          project: {
+            id: project.key,
+            name: project.data.apelidoProjeto,
+          },
+          customer: {
+            name: user.nomeComp ? user.nomeComp : user.nomefantasia,
+            document: user.cpf ? user.cpf : user.cnpj,
+            id: user.key,
+          },
         },
       });
       setModalRequestVisible(false);
@@ -740,7 +753,6 @@ const ProjectDetails = ({navigation, route}) => {
                       type={'primary'}
                       onPress={() => sendRequest()}
                     />
-
                     <SimpleButton
                       value="Cancelar"
                       type={'warning'}
