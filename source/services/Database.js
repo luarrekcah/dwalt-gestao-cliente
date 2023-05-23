@@ -112,6 +112,12 @@ export const getSurveyData = async () => {
   });
   const onlyuser = surveys.filter(i => {
     if (
+      i.data.customer === undefined ||
+      i.data.customer.document === undefined
+    ) {
+      return;
+    }
+    if (
       userCloud.cpf &&
       i.data.customer.document.replaceAll('-', '').replaceAll('.', '') ===
         userCloud.cpf.replaceAll('-', '').replaceAll('.', '')
@@ -127,7 +133,10 @@ export const getSurveyData = async () => {
       return i;
     }
   });
-  return onlyuser;
+
+  console.log(onlyuser);
+
+  return onlyuser || [];
 };
 
 export const getComplaintData = async () => {
@@ -140,6 +149,12 @@ export const getComplaintData = async () => {
   });
   const onlyuser = complaints.filter(i => {
     if (
+      i.data.customer === undefined ||
+      i.data.customer.document === undefined
+    ) {
+      return;
+    }
+    if (
       userCloud.cpf &&
       i.data.customer.document.replaceAll('-', '').replaceAll('.', '') ===
         userCloud.cpf.replaceAll('-', '').replaceAll('.', '')
@@ -155,7 +170,7 @@ export const getComplaintData = async () => {
       return i;
     }
   });
-  return onlyuser;
+  return onlyuser || [];
 };
 
 export const getProjectsData = async () => {

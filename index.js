@@ -7,6 +7,10 @@ import App from './App';
 import {name as appName} from './app.json';
 import notifee, {EventType} from '@notifee/react-native';
 
+if (__DEV__) {
+  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
+}
+
 notifee.onBackgroundEvent(async ({type, detail}) => {
   switch (type) {
     case EventType.DISMISSED:

@@ -10,23 +10,17 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
 import {LoadingActivity, TextSection} from '../../global/Components';
-import {
-  getComplaintData,
-  getSurveyData,
-  getUserData,
-} from '../../services/Database';
+import {getComplaintData, getSurveyData} from '../../services/Database';
 
 import moment from '../../vendors/moment';
 
 const SurveyHistoric = ({navigation}) => {
-  const [user, setUser] = React.useState();
   const [surveys, setSurveys] = React.useState([]);
   const [complaints, setComplaints] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   const loadData = async () => {
     setLoading(true);
-    setUser(await getUserData());
     setSurveys(await getSurveyData());
     setComplaints(await getComplaintData());
     setLoading(false);
