@@ -12,7 +12,7 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import moment from '../../../vendors/moment';
+import moment, {isDataExpired} from '../../../vendors/moment';
 import Colors from '../../../global/colorScheme';
 import {
   LoadingActivity,
@@ -32,11 +32,15 @@ import {
 } from '../../../services/Database';
 import {status} from '../../../utils/dictionary';
 import {LineChart} from 'react-native-chart-kit';
-import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import QRCode from 'react-native-qrcode-svg';
 import {useUser} from '../../../hooks/UserContext';
 import {useBusiness} from '../../../hooks/BusinessContext';
+import {
+  loadDataFromStorage,
+  saveDataToStorage,
+} from '../../../services/AsyncStorage';
+import {getWeatherData} from '../../../services/ExternalAPIs';
 
 const Home = ({navigation}) => {
   const {user, setUser} = useUser();
@@ -47,38 +51,142 @@ const Home = ({navigation}) => {
   const [irradiation, setIrradiation] = React.useState([]);
   const [growatt, setGrowatt] = React.useState();
 
+  const getCurrentPosition = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(resolve, reject);
+    });
+  };
+
+  const fetchWeatherData = async () => {
+    try {
+      const position = await getCurrentPosition();
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      // Verificar se os dados estão armazenados e se estão atualizados
+      const storedData = await loadDataFromStorage('weatherData');
+      if (storedData && !isDataExpired(storedData.timestamp)) {
+        // Utilizar os dados armazenados
+        setIrradiation(storedData.data);
+        return;
+      }
+
+      // Obter novos dados da previsão do tempo
+      const response = await getWeatherData(latitude, longitude);
+      const responseData = response.data;
+
+      // Salvar os novos dados no AsyncStorage
+      const dataToSave = {
+        data: responseData,
+        timestamp: moment().toISOString(),
+      };
+      await saveDataToStorage('weatherData', dataToSave);
+
+      // Utilizar os novos dados
+      setIrradiation(responseData);
+    } catch (error) {
+      console.log('Error fetching weather data:', error);
+    }
+  };
+
+  const fetchAndUpdateData = async () => {
+    try {
+      const growattData = await getGrowattData();
+      const userData = await getUserData();
+      const surveyData = await getSurveyData();
+      const businessData = await getBusinessData();
+      const projectsData = await getProjectsData();
+
+      // Salvar os dados atualizados no AsyncStorage
+      await saveDataToStorage('growattData', growattData);
+      await saveDataToStorage('userData', userData);
+      await saveDataToStorage('surveyData', surveyData);
+      await saveDataToStorage('businessData', businessData);
+      await saveDataToStorage('projectsData', projectsData);
+
+      setGrowatt(growattData);
+      setUser(userData);
+      setBusiness(businessData);
+      setProjects(projectsData);
+
+      // Filtrar pesquisas ativas
+      const activeSurveys = surveyData.filter(survey => !survey.data.finished);
+      setActiveSurvey(activeSurveys);
+    } catch (error) {
+      console.log('Error updating data:', error);
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
-    setGrowatt(await getGrowattData());
-    const userData = await getUserData();
-    setUser(userData);
-    const surveys = await getSurveyData();
-    const businesss = await getBusinessData();
-    const actSurvey = surveys.filter(i => !i.data.finished);
-    setBusiness(businesss);
-    setProjects(await getProjectsData());
-    setActiveSurvey(actSurvey);
-    Geolocation.getCurrentPosition(info => {
-      axios
-        .get('https://api.open-meteo.com/v1/forecast', {
-          params: {
-            latitude: info.coords.latitude,
-            longitude: info.coords.longitude,
-            hourly: 'temperature_2m,direct_radiation,weathercode',
-            daily:
-              'sunrise,sunset,windspeed_10m_max,winddirection_10m_dominant',
-            timezone: 'auto',
-            current_weather: true,
-            start_date: moment().format('YYYY-MM-DD'),
-            end_date: moment().format('YYYY-MM-DD'),
-          },
-        })
-        .then(r => {
-          setIrradiation(r.data);
-        });
-    });
 
-    setLoading(false);
+    fetchWeatherData();
+
+    try {
+      // Carregar os dados do AsyncStorage
+      const storedGrowattData = await loadDataFromStorage('growattData');
+      const storedUserData = await loadDataFromStorage('userData');
+      const storedSurveyData = await loadDataFromStorage('surveyData');
+      const storedBusinessData = await loadDataFromStorage('businessData');
+      const storedProjectsData = await loadDataFromStorage('projectsData');
+
+      // Verificar se os dados existem no AsyncStorage
+      if (
+        storedGrowattData &&
+        storedUserData &&
+        storedSurveyData &&
+        storedBusinessData &&
+        storedProjectsData
+      ) {
+        setGrowatt(storedGrowattData);
+        setUser(storedUserData);
+        setBusiness(storedBusinessData);
+        setProjects(storedProjectsData);
+
+        // Filtrar pesquisas ativas
+        const activeSurveys = storedSurveyData.filter(
+          survey => !survey.data.finished,
+        );
+        setActiveSurvey(activeSurveys);
+
+        // Liberar a tela
+        setLoading(false);
+
+        // Atualizar os dados
+        fetchAndUpdateData();
+      } else {
+        // Caso os dados não existam no AsyncStorage, buscar os dados originais
+        const growattData = await getGrowattData();
+        const userData = await getUserData();
+        const surveyData = await getSurveyData();
+        const businessData = await getBusinessData();
+        const projectsData = await getProjectsData();
+
+        // Salvar os dados no AsyncStorage
+        await saveDataToStorage('growattData', growattData);
+        await saveDataToStorage('userData', userData);
+        await saveDataToStorage('surveyData', surveyData);
+        await saveDataToStorage('businessData', businessData);
+        await saveDataToStorage('projectsData', projectsData);
+
+        setGrowatt(growattData);
+        setUser(userData);
+        setBusiness(businessData);
+        setProjects(projectsData);
+
+        // Filtrar pesquisas ativas
+        const activeSurveys = surveyData.filter(
+          survey => !survey.data.finished,
+        );
+        setActiveSurvey(activeSurveys);
+
+        // Liberar a tela
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log('Error loading data:', error);
+      setLoading(false);
+    }
   };
 
   React.useEffect(() => {
