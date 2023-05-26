@@ -24,7 +24,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   getBusinessData,
-  getGrowattData,
   getItems,
   getProjectsData,
   getSurveyData,
@@ -49,7 +48,6 @@ const Home = ({navigation}) => {
   const [loading, setLoading] = React.useState(true);
   const [activeSurvey, setActiveSurvey] = React.useState([]);
   const [irradiation, setIrradiation] = React.useState([]);
-  const [growatt, setGrowatt] = React.useState();
 
   const getCurrentPosition = () => {
     return new Promise((resolve, reject) => {
@@ -91,20 +89,18 @@ const Home = ({navigation}) => {
 
   const fetchAndUpdateData = async () => {
     try {
-      const growattData = await getGrowattData();
       const userData = await getUserData();
       const surveyData = await getSurveyData();
       const businessData = await getBusinessData();
       const projectsData = await getProjectsData();
 
       // Salvar os dados atualizados no AsyncStorage
-      await saveDataToStorage('growattData', growattData);
+
       await saveDataToStorage('userData', userData);
       await saveDataToStorage('surveyData', surveyData);
       await saveDataToStorage('businessData', businessData);
       await saveDataToStorage('projectsData', projectsData);
 
-      setGrowatt(growattData);
       setUser(userData);
       setBusiness(businessData);
       setProjects(projectsData);
@@ -138,7 +134,6 @@ const Home = ({navigation}) => {
         storedBusinessData &&
         storedProjectsData
       ) {
-        setGrowatt(storedGrowattData);
         setUser(storedUserData);
         setBusiness(storedBusinessData);
         setProjects(storedProjectsData);
@@ -156,20 +151,19 @@ const Home = ({navigation}) => {
         fetchAndUpdateData();
       } else {
         // Caso os dados não existam no AsyncStorage, buscar os dados originais
-        const growattData = await getGrowattData();
+
         const userData = await getUserData();
         const surveyData = await getSurveyData();
         const businessData = await getBusinessData();
         const projectsData = await getProjectsData();
 
         // Salvar os dados no AsyncStorage
-        await saveDataToStorage('growattData', growattData);
+
         await saveDataToStorage('userData', userData);
         await saveDataToStorage('surveyData', surveyData);
         await saveDataToStorage('businessData', businessData);
         await saveDataToStorage('projectsData', projectsData);
 
-        setGrowatt(growattData);
         setUser(userData);
         setBusiness(businessData);
         setProjects(projectsData);
@@ -202,17 +196,6 @@ const Home = ({navigation}) => {
       kwpTotal += Number(item.data.kwp.replaceAll(',', '.'));
     });
     return kwpTotal;
-  };
-
-  const getGrowattProject = plantName => {
-    if (growatt) {
-      const finded = growatt.plantList.data.data.plants.find(
-        g => g.name === plantName,
-      );
-      return finded;
-    } else {
-      return [];
-    }
   };
 
   const weatherDict = {
@@ -330,29 +313,6 @@ const Home = ({navigation}) => {
       iconURL:
         'https://cdn.iconscout.com/icon/free/png-128/weather-thunder-forecast-snow-wind-cloudy-lightning-15451.png',
       title: 'Trovoada com granizo pesado',
-    },
-  };
-
-  const statusDict = {
-    0: {
-      title: 'Desconectado',
-      color: '#a19f9f',
-    },
-    1: {
-      title: 'Normal',
-      color: '#13fc03',
-    },
-    2: {
-      title: 'Aguardando',
-      color: '#13fc03',
-    },
-    3: {
-      title: 'Falha',
-      color: '#fa3916',
-    },
-    4: {
-      title: 'Offline',
-      color: '#a19f9f',
     },
   };
 
@@ -784,29 +744,18 @@ const Home = ({navigation}) => {
                               {item.data.category.toUpperCase()}
                             </Text>
                           </View>
-                          {item.data.username_growatt &&
-                          item.data.overview &&
-                          growatt &&
-                          getGrowattProject(item.data.username_growatt) ? (
+                          {item.data.overview ? (
                             <>
                               <Text
                                 style={{
                                   color: `${
-                                    statusDict[
-                                      getGrowattProject(
-                                        item.data.username_growatt,
-                                      ).status
-                                    ].color
+                                    item.data.overview.status === 'Online'
+                                      ? '#07f045'
+                                      : '#bbbdbb'
                                   }`,
                                   fontWeight: 'bold',
                                 }}>
-                                {
-                                  statusDict[
-                                    getGrowattProject(
-                                      item.data.username_growatt,
-                                    ).status
-                                  ].title
-                                }
+                                {item.data.overview.status}
                               </Text>
                               <View>
                                 <Text
@@ -828,7 +777,7 @@ const Home = ({navigation}) => {
                                     size={20}
                                     color="#fff"
                                   />
-                                  {item.data.overview.data.data.today_energy}
+                                  {item.data.overview.generationHistoric.today}
                                   kW
                                 </Text>
                               </View>

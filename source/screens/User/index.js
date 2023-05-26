@@ -52,14 +52,14 @@ const Business = ({navigation}) => {
             icon="information"
             value="Termos de Uso"
             onPress={() => {
-              Linking.openURL('https://www.dlwalt.com/termos');
+              Linking.openURL('https://connect.dlwalt.com/termos');
             }}
           />
           <Button
             icon="information"
             value="Política de Privacidade"
             onPress={() => {
-              Linking.openURL('https://www.dlwalt.com/politica');
+              Linking.openURL('https://connect.dlwalt.com/politicas');
             }}
           />
           <Button

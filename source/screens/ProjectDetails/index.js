@@ -3,7 +3,6 @@ import React from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   ImageBackground,
   TouchableOpacity,
@@ -16,7 +15,6 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../global/colorScheme';
 import {
-  DocumentCard,
   LoadingActivity,
   SimpleButton,
   TextSection,
@@ -28,62 +26,36 @@ import {
   deleteItem,
   getAllItems,
   getDate,
-  getGrowattData,
-  getItems,
-  updateItem,
 } from '../../services/Database';
-import {getUserAuth} from '../../services/Auth';
 import moment from 'moment/moment';
-import {LineChart} from 'react-native-chart-kit';
 import storage from '@react-native-firebase/storage';
 import {Timeline} from 'react-native-just-timeline';
 import {createNotification} from '../../services/Notification';
 import {useUser} from '../../hooks/UserContext';
 //import MapView from 'react-native-maps'; desinstalar
-import {Dimensions} from 'react-native';
+import styles from './styles';
+import GeneralInfos from './components/GeneralInfos';
+import GenerationInfos from './components/GenerationInfos';
+import OpenImages from './components/OpenImages';
+import Documents from './components/Documents';
+import DeviceInfos from './components/DeviceInfos';
+//import GenerationHistoric from './components/GenerationHistoric';
 
 const ProjectDetails = ({navigation, route}) => {
   const {project} = route.params;
-  const [projectData, setProjectData] = React.useState(project);
-  const [allMedia, setAllmedia] = React.useState([]);
-  const [allDocuments, setAllDocuments] = React.useState([]);
   const [visibleImageViewer, setIsVisibleImageViewer] = React.useState(false);
   const [viewerURI, setViewerURI] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [modalVisible, setModalVisible] = React.useState(false);
   const [requestLoading, setRequestLoading] = React.useState(false);
-  const [modalData, setModalData] = React.useState({});
-  const [value, setValue] = React.useState();
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
-  const [loadingModal, setLoadingModal] = React.useState(false);
   const [typeRequest, setTypeRequest] = React.useState('');
   const [modalRequestVisible, setModalRequestVisible] = React.useState(false);
   const {user, setUser} = useUser();
-  const [chardata, setChartdata] = React.useState();
-  const [growatt, setGrowatt] = React.useState();
   const [historicData, setHistoricData] = React.useState([]);
 
   const loadData = async () => {
     setLoading(true);
-
-    setGrowatt(await getGrowattData());
-
-    setAllmedia(
-      await getAllItems({
-        path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/photos`,
-      }),
-    );
-
-    setAllDocuments(
-      await getAllItems({
-        path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/documents`,
-      }),
-    );
-
-    const pjData = await getItems({
-      path: `gestaoempresa/business/${project.data.business}/projects/${project.key}`,
-    });
 
     const historicTimeline = await getAllItems({
       path: `gestaoempresa/business/${project.data.business}/projects/${project.key}/historic`,
@@ -95,73 +67,7 @@ const ProjectDetails = ({navigation, route}) => {
     });
     setHistoricData(dataTimeline);
 
-    setProjectData(pjData);
-
-    const power = [],
-      labelsMonths = [];
-
-    if (pjData.month_power) {
-      pjData.month_power.data.data.energys.forEach(m => {
-        const month = m.date.split('-')[1];
-        switch (month) {
-          case '01':
-            labelsMonths.push('Jan');
-            break;
-          case '02':
-            labelsMonths.push('Fev');
-            break;
-          case '03':
-            labelsMonths.push('Mar');
-            break;
-          case '04':
-            labelsMonths.push('Abr');
-            break;
-          case '05':
-            labelsMonths.push('Mai');
-            break;
-          case '06':
-            labelsMonths.push('Jun');
-            break;
-          case '07':
-            labelsMonths.push('Jul');
-            break;
-          case '08':
-            labelsMonths.push('Ago');
-            break;
-          case '09':
-            labelsMonths.push('Set');
-            break;
-          case '10':
-            labelsMonths.push('Out');
-            break;
-          case '11':
-            labelsMonths.push('Nov');
-            break;
-          case '12':
-            labelsMonths.push('Dez');
-            break;
-        }
-        power.push(m.energy);
-      });
-    }
-
-    setChartdata({
-      labels: labelsMonths,
-      power: power,
-    });
-
     setLoading(false);
-  };
-
-  const getGrowattProject = plantName => {
-    if (growatt) {
-      const finded = growatt.plantList.data.data.plants.find(
-        g => g.name === plantName,
-      );
-      return finded;
-    } else {
-      return [];
-    }
   };
 
   const sendRequest = async () => {
@@ -290,38 +196,6 @@ const ProjectDetails = ({navigation, route}) => {
     loadData();
   };
 
-  const dictionary = {
-    cod: 'Código do produto',
-  };
-
-  const dictToArray = Object.keys(dictionary).map(key => [
-    key,
-    dictionary[key],
-  ]);
-
-  const statusDict = {
-    0: {
-      title: 'Desconectado',
-      color: '#a19f9f',
-    },
-    1: {
-      title: 'Normal',
-      color: '#13fc03',
-    },
-    2: {
-      title: 'Aguardando',
-      color: '#13fc03',
-    },
-    3: {
-      title: 'Falha',
-      color: '#fa3916',
-    },
-    4: {
-      title: 'Offline',
-      color: '#a19f9f',
-    },
-  };
-
   if (loading) {
     return <LoadingActivity />;
   } else {
@@ -391,26 +265,18 @@ const ProjectDetails = ({navigation, route}) => {
                   {project.data.category.toUpperCase()}
                 </Text>
               </View>
-              {project.data.username_growatt &&
-              growatt &&
-              project.data.overview &&
-              getGrowattProject(project.data.username_growatt) ? (
+              {project.data.overview ? (
                 <>
                   <Text
                     style={{
                       color: `${
-                        statusDict[
-                          getGrowattProject(project.data.username_growatt)
-                            .status
-                        ].color
+                        project.data.overview.status === 'Online'
+                          ? '#07f045'
+                          : '#bbbdbb'
                       }`,
                       fontWeight: 'bold',
                     }}>
-                    {
-                      statusDict[
-                        getGrowattProject(project.data.username_growatt).status
-                      ].title
-                    }
+                    {project.data.overview.status}
                   </Text>
                   <View>
                     <Text
@@ -428,7 +294,7 @@ const ProjectDetails = ({navigation, route}) => {
                         fontWeight: 'bold',
                       }}>
                       <Icon name="battery-charging" size={20} color="#fff" />
-                      {project.data.overview.data.data.today_energy}
+                      {project.data.overview.generationHistoric.today}
                       kW
                     </Text>
                   </View>
@@ -440,148 +306,46 @@ const ProjectDetails = ({navigation, route}) => {
           </View>
         </ImageBackground>
         <View style={styles.container}>
-          <TextSection value={'Informações'} />
-          <Text style={[styles.bottomStatus, {color: '#000000'}]}>
-            <Icon name="alert-circle" size={20} color="#000000" />{' '}
-            {project.data.RStatus === '' || project.data.RStatus === undefined
-              ? 'Sem observação de Status'
-              : project.data.RStatus}
-          </Text>
-          <Text style={[styles.bottomStatus, {color: '#000000'}]}>
-            <Icon name="truck-fast" size={20} color="#000000" />{' '}
-            {project.data.statusRastreio === '' ||
-            project.data.statusRastreio === undefined
-              ? 'Rastreio indisponível'
-              : project.data.statusRastreio}
-          </Text>
-          <Text style={[styles.bottomStatus, {color: '#000000'}]}>
-            <Icon name="wifi" size={20} color="#000000" />{' '}
-            {project.data.username_growatt === '' ||
-            project.data.username_growatt === undefined
-              ? 'Sem nome de usuário growatt'
-              : project.data.username_growatt}
-          </Text>
+          {/* INFORMAÇÕES GERAIS */}
+          <TextSection value={'Informações Gerais'} />
+          <GeneralInfos project={project} />
+          {/* INFORMAÇÕES GERAÇÃO */}
 
           {project.data.overview ? (
-            <View>
-              <Text style={[styles.bottomStatus, {color: '#000000'}]}>
-                <Icon name="update" size={20} color="#000000" />{' '}
-                {project.data.overview.data.data.last_update_time === '' ||
-                project.data.overview.data.data.last_update_time === undefined
-                  ? 'Sem nome de usuário growatt'
-                  : project.data.overview.data.data.last_update_time}
-              </Text>
-            </View>
+            <>
+              <TextSection value={'Informações de Geração'} />
+              <GenerationInfos project={project} />
+            </>
           ) : (
             ''
           )}
-
+          {/* FOTOS LIVRES */}
           <TextSection value={'Fotos'} />
-          <ScrollView horizontal>
-            {allMedia.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onLongPress={() => {
-                    Alert.alert(
-                      'Apagar Imagem',
-                      'Tem certeza que deseja apagar essa imagem?',
-                      [
-                        {
-                          text: 'Não',
-                          onPress: () => console.log('Cancel'),
-                          style: 'cancel',
-                        },
-                        {text: 'Sim', onPress: () => deleteImage(item)},
-                      ],
-                    );
-                  }}
-                  onPress={() => {
-                    setViewerURI(item.data.url);
-                    setIsVisibleImageViewer(true);
-                  }}>
-                  <ImageBackground
-                    style={styles.backgroundImagePhoto}
-                    source={{uri: item.data.url}}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-            <TouchableOpacity style={styles.iconAdd} onPress={pickImages}>
-              <Icon name="plus" size={40} color="#fff" />
-            </TouchableOpacity>
-          </ScrollView>
+          <OpenImages
+            project={project}
+            deleteImage={deleteImage}
+            setViewerURI={setViewerURI}
+            setIsVisibleImageViewer={setIsVisibleImageViewer}
+            pickImages={pickImages}
+          />
+          {/* DOCUMENTOS */}
           <TextSection value={'Documentos'} />
-          <ScrollView horizontal>
-            {allDocuments.length !== 0 ? (
-              allDocuments.map((item, index) => {
-                return (
-                  <DocumentCard
-                    key={index}
-                    title={item.data.documentName}
-                    haveContent={true}
-                    onPressView={
-                      () => Linking.openURL(item.data.documentURL)
-                      /*navigation.navigate('PdfViewer', {
-                        source: {
-                          uri: item.data.documentURL,
-                        },
-                      })*/
-                    }
-                  />
-                );
-              })
-            ) : (
-              <Text style={{color: '#000000'}}>
-                Sem documentos, precisa ser adicionado pela empresa
-              </Text>
-            )}
-          </ScrollView>
-          {project.data.month_power && chardata ? (
+          <Documents project={project} />
+          {/* GRÁFICO INFORMATIVO (COLETAR D API)
+          <GenerationHistoric project={project} />
+          */}
+
+          {/* APARELHOS DO SISTEMA */}
+          {project.data.overview && project.data.overview.devices ? (
             <>
-              <TextSection value={'Histórico de geração'} />
-              <LineChart
-                data={{
-                  labels: chardata.labels,
-                  datasets: [
-                    {
-                      data: chardata.power,
-                    },
-                  ],
-                }}
-                width={Dimensions.get('window').width - 40} // from react-native
-                height={240}
-                yAxisLabel=""
-                yAxisSuffix="kwh"
-                yAxisInterval={1} // optional, defaults to 1
-                chartConfig={{
-                  backgroundColor: Colors.whitetheme.primary,
-                  backgroundGradientFrom: Colors.whitetheme.primary,
-                  backgroundGradientTo: Colors.whitetheme.primary,
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                  labelColor: (opacity = 1) =>
-                    `rgba(255, 255, 255, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                  propsForDots: {
-                    r: '6',
-                    strokeWidth: '2',
-                    stroke: '#fff',
-                  },
-                }}
-                bezier
-                style={{
-                  marginVertical: 8,
-                  borderRadius: 16,
-                }}
-              />
+              <TextSection value={'Aparelhos do Sistema'} />
+              <DeviceInfos project={project} />
             </>
           ) : (
             ''
           )}
 
+          {/* HISTÓRICO DE PROJETO */}
           {historicData.length !== 0 ? (
             <>
               <TextSection value={'Histórico do projeto'} />
@@ -625,82 +389,6 @@ const ProjectDetails = ({navigation, route}) => {
             }}
           />
         </View>
-
-        <View style={styles.centeredView}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                {loadingModal ? (
-                  <Text
-                    style={{
-                      color: '#000000',
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                    }}>
-                    Carregando...
-                  </Text>
-                ) : (
-                  <View>
-                    <Text
-                      style={{
-                        color: '#000000',
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                      }}>
-                      Editar informações de {modalData.title}
-                    </Text>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Insira a nova informação aqui"
-                      placeholderTextColor="#000000"
-                      autoCapitalize="none"
-                      onChangeText={text => setValue(text)}
-                    />
-                    <SimpleButton
-                      value="Enviar"
-                      type={'success'}
-                      onPress={async () => {
-                        setLoadingModal(true);
-                        const userLocal = await getUserAuth();
-
-                        try {
-                          const params = JSON.parse(
-                            '{"' + modalData.key + '":"' + value + '"}',
-                          );
-
-                          updateItem({
-                            path: `gestaoempresa/business/${userLocal.businessKey}/projects/${project.key}`,
-                            params,
-                          });
-                        } catch (e) {
-                          console.log(e);
-                          setLoadingModal(false);
-                          setModalVisible(false);
-                        }
-                        setModalVisible(false);
-                        setLoadingModal(false);
-                        loadData();
-                      }}
-                    />
-
-                    <SimpleButton
-                      value="Cancelar"
-                      type={'warning'}
-                      onPress={() => setModalVisible(false)}
-                    />
-                  </View>
-                )}
-              </View>
-            </View>
-          </Modal>
-        </View>
-
         <View style={styles.centeredView}>
           <Modal
             animationType="slide"
@@ -768,104 +456,5 @@ const ProjectDetails = ({navigation, route}) => {
     );
   }
 };
-
-const styles = new StyleSheet.create({
-  container: {
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: '#fff',
-    top: -40,
-  },
-  white: {
-    backgroundColor: '#fff',
-  },
-  backgroundImage: {
-    height: 170,
-  },
-  projectCard: {
-    padding: 30,
-    borderRadius: 20,
-    height: 200,
-  },
-  projectTitle: {
-    color: '#fff',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  projectCategory: {
-    color: Colors.whitetheme.gray,
-    fontSize: 20,
-  },
-  bottomProject: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  bottomKwp: {
-    color: '#fff',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  bottomStatus: {
-    color: Colors.whitetheme.gray,
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
-  backgroundImagePhoto: {
-    width: 80,
-    height: 140,
-    marginHorizontal: 5,
-  },
-  collectedCard: {
-    color: '#fff',
-    marginRight: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: Colors.whitetheme.primary,
-    borderRadius: 80,
-  },
-  iconAdd: {
-    backgroundColor: Colors.whitetheme.primary,
-    borderRadius: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 80,
-    height: 140,
-  },
-  mapBackground: {height: 250, alignItems: 'center', paddingTop: 40},
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  textInput: {
-    margin: 20,
-    borderColor: Colors.whitetheme.primary,
-    borderWidth: 1,
-    borderRadius: 30,
-    padding: 10,
-    color: '#000000',
-  },
-  modalTitle: {
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-});
 
 export default ProjectDetails;
